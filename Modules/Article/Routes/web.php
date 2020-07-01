@@ -12,5 +12,11 @@
 */
 
 Route::prefix('article')->group(function() {
-    Route::get('/', 'ArticleController@index');
+    Route::get('/', 'ArticleController@index')->name('article');
+});
+
+Route::prefix('backoffice')->group(function() {
+	Route::group(['prefix'=>'article','as'=>'admin.article.'], function(){
+		Route::get('/', ['as' => 'index', 'uses' => 'ArticleAdminController@index']);
+	});
 });
