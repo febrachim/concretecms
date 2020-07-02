@@ -9,23 +9,11 @@ use Modules\Category\Entities\Category;
 
 class ArticleCategory extends Pivot
 {
-    // public function article() {
-    //     return $this->belongsTo('Article');
-    // }
-
-    // public function category() {
-    //     return $this->belongsTo('Category');
-    // }
-
-    // Note: Adding relationships to a pivot model means
-    // you'll probably want a primary key on the pivot table.
-    public function articles($value) {
-        return $this->hasMany('Article'); // example relationship on a pivot model
+    public function article() {
+        return $this->belongsTo('Article');
     }
 
-    // Note: Adding relationships to a pivot model means
-    // you'll probably want a primary key on the pivot table.
-    public function categories($value) {
-        return $this->hasMany('Category'); // example relationship on a pivot model
+    public function category() {
+        return $this->belongsTo('Category');
     }
 }

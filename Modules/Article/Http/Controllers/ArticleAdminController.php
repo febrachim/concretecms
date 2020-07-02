@@ -17,7 +17,7 @@ class ArticleAdminController extends Controller
     public function index()
     {
         if(request()->ajax()) {
-            return datatables()->of(Article::latest()->get())
+            return datatables()->of(Article::with('categories')->get())
                     ->addColumn('action', function($data) {
                         $button = '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></button>';
                         $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
@@ -27,6 +27,7 @@ class ArticleAdminController extends Controller
                     ->make(true);
         }
 
+        $arts = Article::with('categories')->get();
 
         $articles = Article::all();
         $name = '';
@@ -34,7 +35,8 @@ class ArticleAdminController extends Controller
         return view('article::admin.index')->with(
             array(
                 'name' => $name,
-                'articles' => $articles
+                'articles' => $articles,
+                'arts' => $arts
             ));
     }
 

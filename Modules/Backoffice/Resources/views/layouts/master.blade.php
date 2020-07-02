@@ -12,7 +12,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <title>AdminLTE 3 | Starter</title>
   <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" type="text/css" href="{{ mix('css/backoffice.css') }}">
+
 
   <!-- REQUIRED SCRIPTS -->
   <script src="/js/app.js"></script>

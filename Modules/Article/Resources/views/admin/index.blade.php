@@ -36,11 +36,6 @@
             </div>
 
             <br/>
-            @foreach($articles as $article)
-            <pre>
-              {{ $article->categories }}
-            </pre>
-            @endforeach
 
             <!-- /.card-header -->
             <div class="card-body">
@@ -59,7 +54,7 @@
                 <tbody>
                   @foreach($articles as $article)
                   <tr>
-                    <th colspan="8"><h3 align="center">Please Wait...</h3></th>
+                    <th colspan="8"></th>
                   </tr>
                   @endforeach
                 </tbody>
@@ -91,8 +86,15 @@
               name: 'author_id'
             },
             {
-              data: 'categories',
-              name: 'categories'
+              data: function (row) {
+                       let categoryNames= [];
+                         $(row.categories).each(function (i, e) {
+                           categoryNames.push(e.name);
+                           });
+                         return categoryNames.join(", ")
+                       },
+              name: 'categories',
+              orderable: false
             },
             {
               data: 'status',
