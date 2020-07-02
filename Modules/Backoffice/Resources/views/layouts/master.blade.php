@@ -11,10 +11,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <title>AdminLTE 3 | Starter</title>
-  <link rel="stylesheet" type="text/css" href="/css/app.css">
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ mix('css/backoffice.css') }}">
 
   <!-- REQUIRED SCRIPTS -->
   <script src="/js/app.js"></script>
+  {{-- <script src="{{ mix('js/backoffice.js') }}"></script> --}}
+
+  <!-- Datatables required scripts -->
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.bootstrap4.min.js"></script>
 
   @yield('cssfile')
   @yield('jsfile')

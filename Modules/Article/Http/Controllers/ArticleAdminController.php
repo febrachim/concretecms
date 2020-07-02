@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Article\Entities\Article;
 
 class ArticleAdminController extends Controller
 {
@@ -15,11 +16,25 @@ class ArticleAdminController extends Controller
      */
     public function index()
     {
+        if(request()->ajax()) {
+            return datatables()->of(Article::latest()->get())
+                    ->addColumn('action', function($data) {
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></button>';
+                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
+                        return $button;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+
+        $articles = Article::all();
         $name = '';
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
         return view('article::admin.index')->with(
             array(
-                'name' => $name
+                'name' => $name,
+                'articles' => $articles
             ));
     }
 

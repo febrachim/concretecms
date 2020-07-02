@@ -15,5 +15,9 @@ class ArticleCategoryTableSeeder extends Seeder
             'article_id' => '1',
             'category_id' => '1',
         ]);
+        DB::table('article_category')->insert([
+            'article_id' => '2',
+            'category_id' => '1',
+        ]);
     }
 }
