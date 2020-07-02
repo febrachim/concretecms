@@ -11,6 +11,6 @@
 |
 */
 
-Route::prefix('backoffice')->group(function() {
+Route::group(['middleware' => ['role:super-admin|admin'], 'prefix' => 'backoffice'], function () {
     Route::get('/', 'BackofficeController@index')->name('admin.dashboard');
 });

@@ -21,7 +21,6 @@ class ArticlesTableSeeder extends Seeder
             'type' => '0',
             'banner' => '',
             'banner_mobile' => '',
-            'comment_count' => '',
             'published_at' => '2020-04-02 17:18:49',
             'created_at' => '2020-04-02 17:18:49',
             'updated_at' => '2020-04-02 17:18:49',

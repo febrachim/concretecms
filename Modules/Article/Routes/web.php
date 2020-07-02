@@ -16,7 +16,7 @@ Route::prefix('article')->group(function() {
 });
 
 Route::prefix('backoffice')->group(function() {
-	Route::group(['prefix'=>'article','as'=>'admin.article.'], function(){
+	Route::group(['prefix'=>'article','as'=>'admin.article.', 'middleware' => ['role:super-admin|admin']], function(){
 		Route::get('/', ['as' => 'index', 'uses' => 'ArticleAdminController@index']);
 	});
 });

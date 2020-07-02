@@ -35718,6 +35718,8 @@ Popper.Defaults = Defaults;
 
 __webpack_require__(/*! bootstrap */ "../../node_modules/bootstrap/dist/js/bootstrap.js");
 
+__webpack_require__(/*! datatables.net */ "../../node_modules/datatables.net/js/jquery.dataTables.js");
+
 __webpack_require__(/*! datatables.net-bs4 */ "../../node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js");
 
 __webpack_require__(/*! datatables.net-buttons-bs4 */ "../../node_modules/datatables.net-buttons-bs4/js/buttons.bootstrap4.js");

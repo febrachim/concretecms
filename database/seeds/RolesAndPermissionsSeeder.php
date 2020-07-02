@@ -31,10 +31,34 @@ class RolesAndPermissionsSeeder extends Seeder
         $role = Role::create(['name' => 'contributor'])
             ->givePermissionTo([ 'write articles', 'edit articles', 'delete articles']);
         $role = Role::create(['name' => 'subscriber']);
-	
-		// Assign first user role to super-admin
-		$superadmin = User::find(1);
-		$superadmin->assignRole('super-admin');
+    
+        // Assign first user role to super-admin
+        $superadmin = User::find(1);
+        $superadmin->assignRole('super-admin');
+    
+        /**
+        * For development purpose
+        **/
+        
+        // Assign second user role to admin
+        $superadmin = User::find(2);
+        $superadmin->assignRole('admin');
+        
+        // Assign third user role to editor
+        $superadmin = User::find(3);
+        $superadmin->assignRole('editor');
+        
+        // Assign fourth user role to author
+        $superadmin = User::find(4);
+        $superadmin->assignRole('author');
+        
+        // Assign fifth user role to contributor
+        $superadmin = User::find(5);
+        $superadmin->assignRole('contributor');
+        
+        // Assign sixth user role to subscriber
+        $superadmin = User::find(6);
+        $superadmin->assignRole('subscriber');
 
 
     }

@@ -15,7 +15,8 @@ class ArticleAdminController extends Controller
      */
     public function index()
     {
-        $name = isset(Auth::user()->name) ? Auth::user()->name : Auth::user()->email;
+        $name = '';
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
         return view('article::admin.index')->with(
             array(
                 'name' => $name
