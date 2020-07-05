@@ -4,9 +4,36 @@
     border-color: #17a2b8;
     box-shadow: none;
 
-    &:hover{
+    &.focus {
+		color: #fff !important;
+	    background-color: #17a2b8 !important;
+	    border-color: #17a2b8 !important;
+	    box-shadow: none !important;
+    }
+
+    &:hover {
 	    color: #fff;
 	    background-color: #138496;
 	    border-color: #117a8b;
+    }
+
+    &:focus {
+		color: #fff !important;
+	    background-color: #17a2b8 !important;
+	    border-color: #17a2b8 !important;
+	    box-shadow: none !important;
+    }
+}
+
+.btn-danger {
+	color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+    box-shadow: none;
+
+    &:hover {
+	    color: #fff;
+	    background-color: #c82333;
+	    border-color: #bd2130;
     }
 }

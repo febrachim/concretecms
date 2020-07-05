@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Article\Entities\Article;
+use Carbon\Carbon;
 
 class ArticleAdminController extends Controller
 {
@@ -17,17 +18,24 @@ class ArticleAdminController extends Controller
     public function index()
     {
         if(request()->ajax()) {
-            return datatables()->of(Article::with('categories')->get())
+            return datatables()->of(Article::with('categories', 'author')
+                ->get())
                     ->addColumn('action', function($data) {
                         $button = '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></button>';
                         $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
                         return $button;
                     })
+                    ->editColumn('created_at', function ($article) {
+                        return $article->created_at ? with(new Carbon($article->created_at))->format('d F Y') : '';
+                    })
+                    ->editColumn('published_at', function ($article) {
+                        return $article->published_at ? with(new Carbon($article->published_at))->format('d F Y') : '';
+                    })
                     ->rawColumns(['action'])
                     ->make(true);
         }
 
-        $arts = Article::with('categories')->get();
+        $arts = Article::with('categories', 'author')->get();
 
         $articles = Article::all();
         $name = '';
@@ -36,7 +44,7 @@ class ArticleAdminController extends Controller
             array(
                 'name' => $name,
                 'articles' => $articles,
-                'arts' => $arts
+                'arts' => $arts->toJson(JSON_PRETTY_PRINT)
             ));
     }
 

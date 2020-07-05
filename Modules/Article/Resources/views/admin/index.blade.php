@@ -25,19 +25,11 @@
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
-    <!-- /.content-header -->
 
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
         <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">DataTable with default features</h3>
-            </div>
-
-            <br/>
-
-            <!-- /.card-header -->
             <div class="card-body">
               <table id="myTable" class="table table-bordered table-striped">
                 <thead>
@@ -71,6 +63,7 @@
       jQuery(document).ready(function($){
         $.noConflict();
         var table = $('#myTable').DataTable({
+          autoWidth: false,
           processing: true,
           serverSide: true,
           ajax:{
@@ -82,8 +75,8 @@
               name: 'title'
             },
             {
-              data: 'author_id',
-              name: 'author_id'
+              data: 'author.name',
+              name: 'author.name',
             },
             {
               data: function (row) {
@@ -97,7 +90,15 @@
               orderable: false
             },
             {
-              data: 'status',
+              data: function(e) {
+                if(e.status == 1) {
+                  return "published"
+                } else if(e.status == 0) {
+                  return "draft"
+                } else {
+                  return "deleted"
+                }
+              },
               name: 'status'
             },
             {

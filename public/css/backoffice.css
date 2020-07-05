@@ -5,9 +5,36 @@
   box-shadow: none;
 }
 
+.btn-info.focus {
+  color: #fff !important;
+  background-color: #17a2b8 !important;
+  border-color: #17a2b8 !important;
+  box-shadow: none !important;
+}
+
 .btn-info:hover {
   color: #fff;
   background-color: #138496;
   border-color: #117a8b;
+}
+
+.btn-info:focus {
+  color: #fff !important;
+  background-color: #17a2b8 !important;
+  border-color: #17a2b8 !important;
+  box-shadow: none !important;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+  box-shadow: none;
+}
+
+.btn-danger:hover {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
 }
 
