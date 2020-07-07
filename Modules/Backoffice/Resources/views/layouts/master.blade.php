@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>AdminLTE 3 | Starter</title>
+  <title>Concrete CMS | Backoffice</title>
   <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" type="text/css" href="{{ mix('css/backoffice.css') }}">
@@ -107,7 +107,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.article.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.article.create' ) ?  'active' : '' }}">
                   <i class="fas fa-caret-right nav-icon fa-xs"></i>
                   <p>Add New</p>
                 </a>

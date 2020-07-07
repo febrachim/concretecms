@@ -14,7 +14,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">{!! config('article.name') !!}</h1>
+            <h1 class="m-0 text-dark">{!! config('article.name.index') !!}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -27,11 +27,46 @@
     </div>
 
     <!-- Main content -->
-    <div class="content">
-      <div class="container-fluid">
-        <div class="card">
+    <section class="content">
+      <div class="row">
+        <div class="col-md-2">
+          <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
+
+          <div class="card collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">Categories</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0" style="display: none;">
+              <ul class="nav nav-pills flex-column">
+                @foreach($categories as $category)
+                <li class="nav-item active">
+                  <a href="#" class="nav-link">
+                    {{ $category->name }}
+                    <span class="badge bg-primary float-right">{{ $category->articles_count }}</span>
+                  </a>
+                </li>
+                @endforeach
+              </ul>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer p-0">
+              <div class="mailbox-controls">
+                <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-10">
+          <div class="card card-primary card-outline">
             <div class="card-body">
-              <table id="myTable" class="table table-bordered table-striped">
+              <table id="articleTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>Title</th>
@@ -44,25 +79,29 @@
                 </tr>
                 </thead>
                 <tbody>
-                  @foreach($articles as $article)
                   <tr>
-                    <th colspan="8"></th>
+                    <th colspan="8">
+                      <h3 align="center">
+                        Please wait...
+                      </h3>
+                    </th>
                   </tr>
-                  @endforeach
                 </tbody>
               </table>
             </div>
             <!-- /.card-body -->
           </div>
           <!-- /.card -->
-
-      </div><!-- /.container-fluid -->
-    </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
     <!-- /.content -->
     <script>
       jQuery(document).ready(function($){
         $.noConflict();
-        var table = $('#myTable').DataTable({
+        var table = $('#articleTable').DataTable({
           autoWidth: false,
           processing: true,
           serverSide: true,

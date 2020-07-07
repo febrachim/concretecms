@@ -1,7 +1,10 @@
 <?php
 
 return [
-    'name' => 'Article',
+    'name' => [
+    	'index' => 'Article',
+    	'create' => 'Create Article'
+    ],
     'status' => [
 		'0'	=> 'Draft',
 		'1' => 'Published',

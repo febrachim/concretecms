@@ -21,9 +21,9 @@ class ArticlesTableSeeder extends Seeder
             'type' => '0',
             'banner' => '',
             'banner_mobile' => '',
-            'published_at' => '2020-04-02 17:18:49',
-            'created_at' => '2020-04-02 17:18:49',
-            'updated_at' => '2020-04-02 17:18:49',
+            'published_at' => '2020-04-03 17:18:49',
+            'created_at' => '2020-04-03 17:18:49',
+            'updated_at' => '2020-04-03 17:18:49',
         ]);
 
         DB::table('articles')->insert([

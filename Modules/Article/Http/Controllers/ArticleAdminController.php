@@ -4,9 +4,11 @@ namespace Modules\Article\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+// use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Article\Entities\Article;
+use Modules\Category\Entities\Category;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 class ArticleAdminController extends Controller
@@ -35,16 +37,15 @@ class ArticleAdminController extends Controller
                     ->make(true);
         }
 
-        $arts = Article::with('categories', 'author')->get();
+        $categories = Category::withCount('articles')->get();
+        $arts = Article::all();
 
-        $articles = Article::all();
-        $name = '';
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
         return view('article::admin.index')->with(
             array(
                 'name' => $name,
-                'articles' => $articles,
-                'arts' => $arts->toJson(JSON_PRETTY_PRINT)
+                'categories' => $categories,
+                'arts' => $arts
             ));
     }
 
@@ -54,7 +55,12 @@ class ArticleAdminController extends Controller
      */
     public function create()
     {
-        return view('article::create');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+
+        return view('article::admin.create')->with(
+            array(
+                'name' => $name
+            ));
     }
 
     /**
@@ -64,7 +70,43 @@ class ArticleAdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'slug' => 'required',
+            'excerpt' => 'required',
+            'content' => 'required',
+            'banner' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'banner_mobile' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
+
+        $user_id = isset(Auth::user()->id) ? Auth::user()->id : '';
+
+        $banner = $request->file('banner');
+        $banner_mobile = $request->file('banner_mobile');
+
+        // generate a new filename. getClientOriginalExtension() for the file extension
+        $banner_name = 'banner-' . $request->input('title') . '-' . time() . '.' . $banner->getClientOriginalExtension();
+        $banner_mobile_name = 'mobile-banner-' . $request->input('title') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
+
+        // save to public/uploads
+        $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
+        $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
+
+        // Create Article
+        $article = new Article;
+        $article->title = $request->input('title');
+        $article->slug = $request->input('slug');
+        $article->excerpt = $request->input('excerpt');
+        $article->content = $request->input('content');
+        $article->author_id = $user_id;
+        $article->banner = $banner_path;
+        $article->banner_mobile = $banner_mobile_path;
+        $article->published_at = Carbon::now();
+
+        $article->save();
+
+        return redirect('backoffice/article')->with('success', 'Article Created');
+
     }
 
     /**
