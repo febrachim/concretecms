@@ -29,6 +29,36 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
+        <div class="col-md-3 order-md-2">
+          <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
+
+          <div class="card collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">Categories</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0" style="display: none;">
+              <ul class="nav nav-pills flex-column">
+                  <a href="#" class="nav-link">
+                    TES
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer p-0">
+              <div class="mailbox-controls">
+                <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
         <div class="col-md-9">
           <div class="card card-primary card-outline">
             <div class="card-body">
@@ -115,4 +145,13 @@
       <!-- /.row -->
     </section>
     <!-- /.content -->
+@stop
+
+@section('scripts')
+<script>
+  var app = new Vue({
+    el: 'app',
+    data: {}
+  });
+</script>
 @stop
