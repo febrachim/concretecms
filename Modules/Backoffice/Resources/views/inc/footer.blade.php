@@ -4,5 +4,5 @@
 	  Kekanan Kekanan
 	</div> --}}
 	<!-- Default to the left -->
-	<strong>Copyright &copy; 2020 Concrete Jakarta.</strong> All rights reserved.
+	<strong>Copyright &copy; 2020</strong> Concrete Jakarta. All rights reserved.
 </footer>

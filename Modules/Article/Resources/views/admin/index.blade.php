@@ -28,72 +28,74 @@
 
     <!-- Main content -->
     <section class="content">
-      <div class="row">
-        <div class="col-md-2 order-md-2">
-          <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-2 order-md-2">
+            <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
 
-          <div class="card collapsed-card">
-            <div class="card-header">
-              <h3 class="card-title">Categories</h3>
+            <div class="card collapsed-card">
+              <div class="card-header">
+                <h3 class="card-title">Categories</h3>
 
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                </button>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-0" style="display: none;">
+                <ul class="nav nav-pills flex-column">
+                  @foreach($categories as $category)
+                  <li class="nav-item active">
+                    <a href="#" class="nav-link">
+                      {{ $category->name }}
+                      <span class="badge bg-primary float-right">{{ $category->articles_count }}</span>
+                    </a>
+                  </li>
+                  @endforeach
+                </ul>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer p-0">
+                <div class="mailbox-controls">
+                  <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
+                </div>
               </div>
             </div>
-            <div class="card-body p-0" style="display: none;">
-              <ul class="nav nav-pills flex-column">
-                @foreach($categories as $category)
-                <li class="nav-item active">
-                  <a href="#" class="nav-link">
-                    {{ $category->name }}
-                    <span class="badge bg-primary float-right">{{ $category->articles_count }}</span>
-                  </a>
-                </li>
-                @endforeach
-              </ul>
-            </div>
-            <!-- /.card-body -->
-            <div class="card-footer p-0">
-              <div class="mailbox-controls">
-                <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
-              </div>
-            </div>
+            <!-- /.card -->
           </div>
-          <!-- /.card -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-10">
-          <div class="card card-primary card-outline">
-            <div class="card-body">
-              <table id="articleTable" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th>Categories</th>
-                  <th>Status</th>
-                  <th>Created At</th>
-                  <th>Published At</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
+          <!-- /.col -->
+          <div class="col-md-10">
+            <div class="card card-primary card-outline">
+              <div class="card-body">
+                <table id="articleTable" class="table table-bordered table-striped">
+                  <thead>
                   <tr>
-                    <th colspan="8">
-                      <h3 align="center">
-                        Please wait...
-                      </h3>
-                    </th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Categories</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Published At</th>
+                    <th>Actions</th>
                   </tr>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th colspan="8">
+                        <h3 align="center">
+                          Please wait...
+                        </h3>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
             </div>
-            <!-- /.card-body -->
+            <!-- /.card -->
           </div>
-          <!-- /.card -->
+          <!-- /.col -->
         </div>
-        <!-- /.col -->
       </div>
       <!-- /.row -->
     </section>
