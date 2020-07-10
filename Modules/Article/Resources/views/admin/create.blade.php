@@ -75,9 +75,9 @@
 
                   <div class="form-group">
                     {{ Form::label('title', 'Title') }}
-                    <b-form-input v-model="text" name="title" id="title" size="lg" placeholder=""></b-form-input>
+                    <b-form-input type="text" name="title" id="title" size="lg" placeholder="" v-model="title"></b-form-input>
+                    <slug-widget url="{{ url('/') }}" subdirectory="article" :title="title" @slug-changed="updateSlug"></slug-widget>
                   </div>
-                  <p>{{ url('/article') }}</p>
 
                   <div class="form-group">
                     {{ Form::label('slug', 'slug') }}
@@ -124,7 +124,15 @@
   <script>
     const app = new Vue({
         el: '#app',
-        data: {}
+        data: {
+          title: '',
+          slug: ''
+        },
+        methods: {
+          updateSlug: function(val) {
+            this.slug = val;
+          }
+        }
       });
   </script>
 @endsection

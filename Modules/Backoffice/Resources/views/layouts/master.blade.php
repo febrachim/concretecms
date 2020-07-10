@@ -12,6 +12,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <title>Concrete CMS | Backoffice</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/admin.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/backoffice.css') }}">
 

@@ -7,6 +7,8 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.Slug = require('slug');
+Slug.defaults.mode = "rfc3986";
 
 import BootstrapVue from 'bootstrap-vue' //Importing
 
@@ -23,7 +25,8 @@ Vue.use(BootstrapVue) // Telling Vue to use this in whole application
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('slug-widget', require('./components/SlugWidget.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

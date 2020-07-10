@@ -27,6 +27,7 @@
         "@fortawesome/fontawesome-free": "^5.13.1",
         "admin-lte": "^3.0.5",
         "bootstrap-vue": "^2.15.0",
-        "moment": "^2.27.0"
+        "moment": "^2.27.0",
+        "slug": "^3.3.0"
     }
 }
