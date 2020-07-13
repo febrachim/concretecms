@@ -4,10 +4,14 @@ namespace Modules\User\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
+// use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\Entities\User;
 use Carbon\Carbon;
+use DB;
+use Hash;
+use Session;
 
 class UserAdminController extends Controller
 {
@@ -21,7 +25,8 @@ class UserAdminController extends Controller
             return datatables()->of(User::with('roles')
                 ->get())
                     ->addColumn('action', function($data) {
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></button>';
+                        $button = '<a href="'.route('admin.user.show', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-default btn-flat"><i class="fas fa-eye"></i></a>';
+                        $button .= '<a href="'.route('admin.user.edit', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></a>';
                         $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
                         return $button;
                     })
@@ -48,7 +53,11 @@ class UserAdminController extends Controller
      */
     public function create()
     {
-        return view('user::create');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        return view('user::admin.create')->with(
+            array(
+                'name' => $name
+            ));
     }
 
     /**
@@ -58,7 +67,39 @@ class UserAdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users',
+        ]);
+
+        if($request->has('password') && !empty($request->password)) {
+            $password = $request->password; 
+        } else {
+            //Auto generate password
+            $length = 10;
+            $keyspace = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+            $str = '';
+            $max = mb_strlen($keyspace, '8bit') - 1;
+            for($i = 0; $i < $length; ++$i) {
+                $str .= $keyspace[random_int(0, $max)];
+            }
+            $password = $str;
+        }
+
+        $user = new User();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($password);
+        $user->api_token = bin2hex(openssl_random_pseudo_bytes(30)); 
+        $user->save();
+
+        if($user->save()) {
+             return redirect()->route('admin.user.show', $user->id);
+        } else {
+            Session::flash('danger', 'Sorry, a problem occured while creating user ');
+            return redirect()->route('admin.user.create');
+        }
     }
 
     /**
@@ -68,7 +109,14 @@ class UserAdminController extends Controller
      */
     public function show($id)
     {
-        return view('user::show');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $user = User::findOrFail($id);
+
+        return view('user::admin.show')->with(
+            array(
+                'name' => $name,
+                'user' => $user
+            ));
     }
 
     /**
@@ -78,7 +126,14 @@ class UserAdminController extends Controller
      */
     public function edit($id)
     {
-        return view('user::edit');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $user = User::findOrFail($id);
+
+        return view('user::admin.edit')->with(
+            array(
+                'name' => $name,
+                'user' => $user
+            ));
     }
 
     /**
@@ -89,7 +144,35 @@ class UserAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users,email,'.$id,
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if($request->password_options == 'auto') {
+            //Auto generate password
+            $length = 10;
+            $keyspace = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+            $str = '';
+            $max = mb_strlen($keyspace, '8bit') - 1;
+            for($i = 0; $i < $length; ++$i) {
+                $str .= $keyspace[random_int(0, $max)];
+            }
+            $user->password = Hash::make($str);
+        } else if ($request->password_options == 'manual') {
+            $user->password = Hash::make($request->password);
+        }
+
+        if($user->save()) {
+             return redirect()->route('admin.user.show', $user->id);
+        } else {
+            Session::flash('danger', 'Sorry, a problem occured while updating user ');
+            return redirect()->route('admin.user.edit');
+        }
     }
 
     /**

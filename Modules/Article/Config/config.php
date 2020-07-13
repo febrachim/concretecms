@@ -2,7 +2,7 @@
 
 return [
     'name' => [
-    	'index' => 'Article',
+    	'index' => 'Articles',
     	'create' => 'Create Article'
     ],
     'status' => [

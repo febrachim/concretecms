@@ -18,7 +18,10 @@ Route::prefix('user')->group(function() {
 Route::prefix('backoffice')->group(function() {
 	Route::group(['prefix'=>'user','as'=>'admin.user.', 'middleware' => ['role:superadministrator|administrator']], function(){
 		Route::get('/', ['as' => 'index', 'uses' => 'UserAdminController@index']);
+		Route::get('/{id}/details', ['as' => 'show', 'uses' => 'UserAdminController@show']);
 		Route::get('/create', ['as' => 'create', 'uses' => 'UserAdminController@create']);
 		Route::post('', ['as' => 'store', 'uses' => 'UserAdminController@store']);
+		Route::get('/{id}/edit/', ['as' => 'edit', 'uses' => 'UserAdminController@edit']);
+		Route::match(['put', 'patch'], '/{id}/update', ['as' => 'update', 'uses' => 'UserAdminController@update']);
 	});
 });

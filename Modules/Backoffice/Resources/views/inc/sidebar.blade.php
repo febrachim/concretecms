@@ -66,7 +66,7 @@
           <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'active' : '' }}">
             <i class="nav-icon fas fa-file-alt"></i>
             <p>
-              Manage Users
+              Users
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>

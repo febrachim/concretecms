@@ -3,6 +3,7 @@
 return [
     'name' => [
     	'index' => 'Users',
-    	'create' => 'Create User'
+    	'create' => 'Create User',
+    	'edit' => 'Edit User'
     ]
 ];
