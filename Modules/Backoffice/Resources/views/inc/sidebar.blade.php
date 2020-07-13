@@ -62,14 +62,28 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-th"></i>
+        <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'active' : '' }}">
+            <i class="nav-icon fas fa-file-alt"></i>
             <p>
-              Simple Link
-              <span class="right badge badge-danger">New</span>
+              Manage Users
+              <i class="right fas fa-angle-left"></i>
             </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('admin.user.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.user.index' ) ?  'active' : '' }}">
+                <i class="fas fa-caret-right nav-icon fa-xs"></i>
+                <p>All Users</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.user.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.user.create' ) ?  'active' : '' }}">
+                <i class="fas fa-caret-right nav-icon fa-xs"></i>
+                <p>Add New</p>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </nav>

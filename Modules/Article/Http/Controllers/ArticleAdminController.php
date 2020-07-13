@@ -38,14 +38,12 @@ class ArticleAdminController extends Controller
         }
 
         $categories = Category::withCount('articles')->get();
-        $arts = Article::all();
 
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
         return view('article::admin.index')->with(
             array(
                 'name' => $name,
                 'categories' => $categories,
-                'arts' => $arts
             ));
     }
 
