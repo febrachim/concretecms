@@ -23,8 +23,9 @@ class ArticleAdminController extends Controller
             return datatables()->of(Article::with('categories', 'author')
                 ->get())
                     ->addColumn('action', function($data) {
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></button>';
-                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
+                        $button = '<button type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></button>';
+                        $button .= '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></button>';
+                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat btn-sm mr-1"><i class="fas fa-trash fa-sm"></i></button>';
                         return $button;
                     })
                     ->editColumn('created_at', function ($article) {

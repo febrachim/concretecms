@@ -24,6 +24,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('admin.user.index') }}">{!! config('user.name.index') !!}</a></li>
               <li class="breadcrumb-item active">{!! config('user.name.edit') !!}</li>
             </ol>
           </div><!-- /.col -->
@@ -35,36 +36,6 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-3 order-md-2">
-            <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
-
-            <div class="card collapsed-card">
-              <div class="card-header">
-                <h3 class="card-title">Categories</h3>
-
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body p-0" style="display: none;">
-                <ul class="nav nav-pills flex-column">
-                    <a href="#" class="nav-link">
-                      TES
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer p-0">
-                <div class="mailbox-controls">
-                  <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
-                </div>
-              </div>
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
           <div class="col-md-9">
             <div class="card card-primary card-outline">
               <div class="card-body">
@@ -87,6 +58,17 @@
                   <div class="form-group">
                     {{ Form::label('email', 'Email') }}
                     {{ Form::email('email', $value = $user->email, ['class' => 'form-control', 'placeholder' => '']) }}
+                  </div>
+
+                  <div class="form-group">
+                    {{ Form::label('role', 'Role') }}
+                    <input type="hidden" name="roles" :value="rolesSelected">
+                    <b-form-select v-model="rolesSelected" class="mb-3">
+                      <b-form-select-option :value="null" disabled>-- Please select a role to assign --</b-form-select-option>
+                      @foreach($roles as $role)
+                        <b-form-select-option :value="{{ $role->id }}">{{ $role->name }}</b-form-select-option>  
+                      @endforeach
+                    </b-form-select>
                   </div>
 
                   <div class="form-group user-checkbox">
@@ -128,7 +110,8 @@
     const app = new Vue({
         el: '#app',
         data: {
-          password_options: "keep"
+          password_options: "keep",
+          rolesSelected: {!! $user->roles->pluck('id')->first() ? $user->roles->pluck('id')->first() : '0' !!}
         }
       });
   </script>

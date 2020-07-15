@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\Entities\User;
+use Modules\User\Entities\Role;
 use Carbon\Carbon;
 use DB;
 use Hash;
@@ -25,9 +26,9 @@ class UserAdminController extends Controller
             return datatables()->of(User::with('roles')
                 ->get())
                     ->addColumn('action', function($data) {
-                        $button = '<a href="'.route('admin.user.show', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-default btn-flat"><i class="fas fa-eye"></i></a>';
-                        $button .= '<a href="'.route('admin.user.edit', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat"><i class="fas fa-pen"></i></a>';
-                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></button>';
+                        $button = '<a href="'.route('admin.user.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
+                        $button .= '<a href="'.route('admin.user.edit', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></a>';
+                        $button .= '<button type="button" class="btn btn-danger btn-flat btn-sm mr-1 deleteUser" data-toggle="modal" data-target="#deleteModal" id="'.$data->id.'"><i class="fas fa-trash fa-sm"></i></button>';
                         return $button;
                     })
                     ->editColumn('created_at', function ($user) {
@@ -37,13 +38,12 @@ class UserAdminController extends Controller
                     ->make(true);
         }
 
-        $usr = User::with('roles')->get();
-
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $current_user_id = isset(Auth::user()->id) ? Auth::user()->id : '';
         return view('user::admin.index')->with(
             array(
                 'name' => $name,
-                'usr' => $usr
+                'current_user_id' => $current_user_id,
             ));
     }
 
@@ -54,9 +54,11 @@ class UserAdminController extends Controller
     public function create()
     {
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $roles = Role::all();
         return view('user::admin.create')->with(
             array(
-                'name' => $name
+                'name' => $name,
+                'roles' => $roles
             ));
     }
 
@@ -94,6 +96,8 @@ class UserAdminController extends Controller
         $user->api_token = bin2hex(openssl_random_pseudo_bytes(30)); 
         $user->save();
 
+        $user->syncRoles(explode(',', $request->roles));
+
         if($user->save()) {
              return redirect()->route('admin.user.show', $user->id);
         } else {
@@ -110,7 +114,7 @@ class UserAdminController extends Controller
     public function show($id)
     {
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->with('roles')->first();
 
         return view('user::admin.show')->with(
             array(
@@ -127,12 +131,14 @@ class UserAdminController extends Controller
     public function edit($id)
     {
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->with('roles')->first();
+        $roles = Role::all();
 
         return view('user::admin.edit')->with(
             array(
                 'name' => $name,
-                'user' => $user
+                'user' => $user,
+                'roles' => $roles
             ));
     }
 
@@ -166,13 +172,17 @@ class UserAdminController extends Controller
         } else if ($request->password_options == 'manual') {
             $user->password = Hash::make($request->password);
         }
+        $user->save();
 
-        if($user->save()) {
-             return redirect()->route('admin.user.show', $user->id);
-        } else {
-            Session::flash('danger', 'Sorry, a problem occured while updating user ');
-            return redirect()->route('admin.user.edit');
-        }
+        $user->syncRoles(explode(',', $request->roles));
+        return redirect()->route('admin.user.show', $user->id);
+
+        // if() {
+        //      return redirect()->route('admin.user.show', $user->id);
+        // } else {
+        //     Session::flash('danger', 'Sorry, a problem occured while updating user ');
+        //     return redirect()->route('admin.user.edit');
+        // }
     }
 
     /**
@@ -182,6 +192,12 @@ class UserAdminController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // delete
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        // redirect
+        Session::flash('message', 'Successfully delete user data');
+        return redirect()->route('admin.user.index');
     }
 }

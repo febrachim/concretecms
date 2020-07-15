@@ -23,5 +23,6 @@ Route::prefix('backoffice')->group(function() {
 		Route::post('', ['as' => 'store', 'uses' => 'UserAdminController@store']);
 		Route::get('/{id}/edit/', ['as' => 'edit', 'uses' => 'UserAdminController@edit']);
 		Route::match(['put', 'patch'], '/{id}/update', ['as' => 'update', 'uses' => 'UserAdminController@update']);
+		Route::get('/delete/{id}', ['as' => 'delete', 'uses' => 'UserAdminController@destroy']);
 	});
 });
