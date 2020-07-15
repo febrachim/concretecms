@@ -4,11 +4,16 @@ namespace Modules\Article\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+// use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Article\Entities\Article;
+use App\Http\Controllers\Controller;
 
 class ArticleController extends Controller
 {
+    public function __construct() {
+        $this->middleware('role:superadministrator|administrator|editor|author|contributor');
+    }
     /**
      * Display a listing of the resource.
      * @return Response
@@ -76,5 +81,9 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function apiCheckUnique(Request $request) {
+        return json_encode(!Article::where('slug', '=', $request->slug)->exists());
     }
 }

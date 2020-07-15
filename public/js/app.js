@@ -1991,18 +1991,17 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      slug: this.convertTitle(),
+      slug: this.setSlug(this.title),
       isEditing: false,
       customSlug: '',
-      wasEdited: false
+      wasEdited: false,
+      api_token: this.$root.api_token
     };
   },
   methods: {
-    convertTitle: function convertTitle() {
-      return Slug(this.title);
-    },
     editSlug: function editSlug() {
       this.customSlug = this.slug;
+      this.$emit('edit', this.slug);
       this.isEditing = true;
     },
     saveSlug: function saveSlug() {
@@ -2010,24 +2009,47 @@ __webpack_require__.r(__webpack_exports__);
         this.wasEdited = true;
       }
 
-      this.slug = Slug(this.customSlug);
+      this.setSlug(this.customSlug);
+      this.$emit('save', this.slug);
       this.isEditing = false;
     },
     resetSlug: function resetSlug() {
-      this.slug = this.convertTitle();
+      this.setSlug(this.title);
+      this.$emit('reset', this.slug);
       this.wasEdited = false;
       this.isEditing = false;
+    },
+    setSlug: function setSlug(newVal) {
+      var count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var slug = Slug(newVal + (count > 0 ? "-".concat(count) : ''));
+      var vm = this;
+
+      if (this.api_token && slug) {
+        // test if slug is unique
+        axios.get('/api/articles/unique', {
+          params: {
+            api_token: vm.api_token,
+            slug: slug
+          }
+        }).then(function (response) {
+          if (response.data) {
+            vm.slug = slug;
+            vm.$emit('slug-changed', slug);
+          } else {
+            vm.setSlug(newVal, count + 1);
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     }
   },
   watch: {
     title: _.debounce(function () {
       if (this.wasEdited === false) {
-        this.slug = this.convertTitle();
+        this.setSlug(this.title);
       }
-    }, 500),
-    slug: function slug(val) {
-      this.$emit('slug-changed', val);
-    }
+    }, 500)
   }
 });
 

@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/article', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/article', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/articles/unique', 'ArticleController@apiCheckUnique')->name('api.articles.unique');
 });
