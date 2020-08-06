@@ -31,7 +31,6 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-3 order-md-2">
-            <a href="{{ route('admin.article.create') }}" class="btn btn-primary btn-block mb-3">New Article</a>
 
             <div class="card collapsed-card">
               <div class="card-header">

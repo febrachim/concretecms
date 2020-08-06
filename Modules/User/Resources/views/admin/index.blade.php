@@ -163,18 +163,21 @@
                 alert('cannot delete your own account!');
                 return false;
               }
-              $('#ok_button').text('deleting...');
+              $('#ok_button').text('Deleting...');
               $('#ok_button').addClass('disabled');
             },
             success: function(data) {
               setTimeout(function(){
                 $('#confirmModal').modal('hide');
-              $('#ok_button').removeClass('disabled');
+                $('#ok_button').removeClass('disabled');
+                $('#ok_button').text('Delete');
                 table.ajax.reload();
               }, 500);
             }
           })
         })
       });
+
+      $('div.alert').not('.alert-danger').delay(2500).fadeOut(500);
     </script>
 @stop

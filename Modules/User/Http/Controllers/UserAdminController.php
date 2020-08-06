@@ -96,11 +96,17 @@ class UserAdminController extends Controller
         $user->password = Hash::make($password);
         $user->save();
 
+        if($user->save()) {
+            flash('User sucessfully created')->success();
+        } else {
+            flash('An error occured')->error()->important();
+        }
+
         if ($request->roles) {
             $user->syncRoles(explode(',', $request->roles));
         }
 
-        return redirect()->route('admin.user.show', $user->id);
+        return redirect()->route('admin.user.index');
     }
 
     /**

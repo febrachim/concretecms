@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Article\Entities\Article;
 use Modules\Category\Entities\Category;
 use App\Http\Controllers\Controller;
+use Coderello\Laraflash\Facades\Laraflash;
 use Carbon\Carbon;
 
 class ArticleAdminController extends Controller
@@ -103,6 +104,7 @@ class ArticleAdminController extends Controller
         $article->published_at = Carbon::now();
 
         $article->save();
+
 
         return redirect('backoffice/article')->with('success', 'Article Created');
 
