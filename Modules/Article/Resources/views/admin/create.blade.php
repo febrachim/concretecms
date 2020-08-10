@@ -29,90 +29,13 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3 order-md-2">
+        @include('backoffice::inc.messages')
+      </div>
 
-            <div class="card collapsed-card">
-              <div class="card-header">
-                <h3 class="card-title">Categories</h3>
+      <div class="container-fluid">
 
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body p-0" style="display: none;">
-                <ul class="nav nav-pills flex-column">
-                    <a href="#" class="nav-link">
-                      TES
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer p-0">
-                <div class="mailbox-controls">
-                  <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
-                </div>
-              </div>
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-          <div class="col-md-9">
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                @include('backoffice::inc.messages')
+          <create-article-component :options="options" :url="url" :token="api_token"></create-article-component>
 
-                {{ Form::open([
-                  'route' => 'admin.article.store',
-                  'method' => 'POST',
-                  'files' => true
-                  ]) }}
-
-                  {!! csrf_field() !!}
-
-                  <div class="form-group">
-                    {{ Form::label('title', 'Title') }}
-                    <b-form-input type="text" name="title" id="title" size="lg" placeholder="" v-model="title"></b-form-input>
-                    <slug-widget url="{{ url('/') }}" subdirectory="article" :title="title" @slug-changed="updateSlug"></slug-widget>
-                  </div>
-
-                  <div class="form-group">
-                    {{ Form::label('slug', 'slug') }}
-                    {{ Form::text('slug', '', ['class' => 'form-control', 'placeholder' => 'slug']) }}
-                  </div>
-
-                  <div class="form-group">
-                    {{ Form::label('excerpt', 'Excerpt') }}
-                    {{ Form::textarea('excerpt', '', ['class' => 'form-control', 'placeholder' => 'Excerpt']) }}
-                  </div>
-
-                  <div class="form-group">
-                    {{ Form::label('content', 'Content') }}
-                    {{ Form::textarea('content', '', ['class' => 'form-control', 'placeholder' => 'Content']) }}
-                  </div>
-
-                  <div class="form-group">
-                    {{ Form::label('banner_mobile', 'Banner Image') }}
-                    {{ Form::file('banner') }}
-                  </div>
-
-                  <div class="form-group">
-                    {{ Form::label('banner_mobile', 'Mobile Banner Image') }}
-                    {{ Form::file('banner_mobile') }}
-                  </div>
-
-                  {{ Form::submit('Submit', ['class' => 'btn btn-primary']) }}
-
-                {{ Form::close() }}
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
       </div>
       <!-- /.row -->
     </section>
@@ -125,8 +48,12 @@
         el: '#app',
         data: {
           title: '',
+          categories: '',
           slug: '',
-          api_token: '{{ Auth::user()->api_token }}'
+          api_token: '{{ Auth::user()->api_token }}',
+          selected: [],
+          options: {!! json_encode($checkbox_categories,TRUE) !!},
+          url: '{{ url('/') }}',
         },
         methods: {
           updateSlug: function(val) {

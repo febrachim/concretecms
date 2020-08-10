@@ -7,6 +7,7 @@
 
                     <div class="card-body">
                         I'm an example component.
+                        <create-article-component></create-article-component>
                     </div>
                 </div>
             </div>

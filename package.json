@@ -28,6 +28,8 @@
         "admin-lte": "^3.0.5",
         "bootstrap-vue": "^2.15.0",
         "moment": "^2.27.0",
-        "slug": "^3.3.0"
+        "slug": "^3.3.0",
+        "vue2-editor": "^2.10.2",
+        "vuelidate": "^0.7.5"
     }
 }

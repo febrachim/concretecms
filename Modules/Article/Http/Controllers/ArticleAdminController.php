@@ -56,10 +56,18 @@ class ArticleAdminController extends Controller
     public function create()
     {
         $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $checkbox_categories = [];
+        $categories = Category::all();
+        foreach ($categories as $key => $category) {
+            $checkbox_categories[$key]['text'] = $category->name;
+            $checkbox_categories[$key]['value'] = $category->id;
+        }
 
         return view('article::admin.create')->with(
             array(
-                'name' => $name
+                'name' => $name,
+                'categories' => $categories,
+                'checkbox_categories' => $checkbox_categories
             ));
     }
 
@@ -72,7 +80,7 @@ class ArticleAdminController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
-            'slug' => 'required',
+            'slug-edit' => 'required',
             'excerpt' => 'required',
             'content' => 'required',
             'banner' => 'required|image|mimes:jpeg,jpg,png|max:2048',
