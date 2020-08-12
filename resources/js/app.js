@@ -13,6 +13,7 @@ Slug.defaults.mode = "rfc3986";
 import BootstrapVue from 'bootstrap-vue' //Importing
 import Vuelidate from 'vuelidate'
 import Vue2Editor from 'vue2-editor'
+import qs from 'qs'
 
 Vue.use(BootstrapVue) // Telling Vue to use this in whole application
 Vue.use(Vuelidate)

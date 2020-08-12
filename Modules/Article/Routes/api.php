@@ -19,5 +19,5 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/articles/unique', 'ArticleController@apiCheckUnique')->name('api.articles.unique');
-    Route::post('', ['as' => 'store', 'uses' => 'ArticleAdminController@store']);
+    Route::post('/articles/store', 'ArticleAdminController@store')->name('api.articles.store');
 });

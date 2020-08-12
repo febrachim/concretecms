@@ -14,6 +14,9 @@ use Carbon\Carbon;
 
 class ArticleAdminController extends Controller
 {
+    public function __construct() {
+        $this->middleware('role:superadministrator|administrator|editor|author|contributor');
+    }
     /**
      * Display a listing of the resource.
      * @return Response
@@ -80,25 +83,52 @@ class ArticleAdminController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
-            'slug-edit' => 'required',
+            'slug' => 'required',
+            "categories" => "required",
             'excerpt' => 'required',
             'content' => 'required',
-            'banner' => 'required|image|mimes:jpeg,jpg,png|max:2048',
-            'banner_mobile' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'fileBanner' => 'required',
+            'fileBannerMobile' => 'required',
         ]);
 
+        $banner_path = '';
+        $banner_mobile_path = '';
+
+
+        // Check if banner is not null
+        if($request->has('fileBanner')){
+            $banner = $request->file('fileBanner');
+
+            // Set banner name
+            $banner_name = 'banner-' . $request->input('slug') . '-' . time() . '.' . $banner->getClientOriginalExtension();
+
+            // Save banner to public/uploads directory
+            $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
+        }
+
+        // Check if mobile banner is not null
+        if($request->has('fileBannerMobile')){
+            $banner_mobile = $request->file('fileBannerMobile');
+
+            // Set mobile banner name
+            $banner_mobile_name = 'banner-mobile-' . $request->input('slug') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
+
+            // Save mobile banner to public/uploads directory
+            $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
+        }
+
+
+        // // return as JSON
+        // return response()->json([
+        //     'banner_name' => $banner_name,
+        //     'banner_path' => $banner_path,
+        //     'banner_mobile_name' => $banner_mobile_name,
+        //     'banner_mobile_path' => $banner_mobile_path,
+        // ]);
+
+        // COMMENT DULU SEMENTARA GW DEVELOP VUE FORM
+
         $user_id = isset(Auth::user()->id) ? Auth::user()->id : '';
-
-        $banner = $request->file('banner');
-        $banner_mobile = $request->file('banner_mobile');
-
-        // generate a new filename. getClientOriginalExtension() for the file extension
-        $banner_name = 'banner-' . $request->input('title') . '-' . time() . '.' . $banner->getClientOriginalExtension();
-        $banner_mobile_name = 'mobile-banner-' . $request->input('title') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
-
-        // save to public/uploads
-        $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
-        $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
 
         // Create Article
         $article = new Article;
@@ -114,8 +144,10 @@ class ArticleAdminController extends Controller
         $article->save();
 
 
-        return redirect('backoffice/article')->with('success', 'Article Created');
+        // return redirect('backoffice/article')->with('success', 'Article Created');
 
+        // return json_encode($request->all());
+        return response()->json([$request->all()]);
     }
 
     /**
