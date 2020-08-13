@@ -30,7 +30,7 @@
         "moment": "^2.27.0",
         "qs": "^6.9.4",
         "slug": "^3.3.0",
-        "vue2-editor": "^2.10.2",
-        "vuelidate": "^0.7.5"
+        "vee-validate": "^3.3.9",
+        "vue2-editor": "^2.10.2"
     }
 }

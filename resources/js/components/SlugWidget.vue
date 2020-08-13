@@ -59,6 +59,7 @@
                 required: true
             },
             title: {
+                default: '',
                 type: String,
                 required: true
             }
@@ -119,7 +120,7 @@
         watch: {
             title: _.debounce(function() {
                 if(this.wasEdited === false){
-                     this.setSlug(this.title) ;
+                     this.setSlug(this.title);
                 }
             }, 500)
         }

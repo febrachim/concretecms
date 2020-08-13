@@ -147,7 +147,14 @@ class ArticleAdminController extends Controller
         // return redirect('backoffice/article')->with('success', 'Article Created');
 
         // return json_encode($request->all());
-        return response()->json([$request->all()]);
+        // return as JSON
+        return response()->json([
+            'success' => true,
+            'banner_name' => $banner_name,
+            'banner_path' => $banner_path,
+            'banner_mobile_name' => $banner_mobile_name,
+            'banner_mobile_path' => $banner_mobile_path,
+        ]);
     }
 
     /**

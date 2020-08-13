@@ -54,11 +54,7 @@
           selected: [],
           options: {!! json_encode($checkbox_categories,TRUE) !!},
           url: '{{ url('/') }}',
-        },
-        methods: {
-          updateSlug: function(val) {
-            this.slug = val;
-          }
+          blank: ''
         }
       });
   </script>
