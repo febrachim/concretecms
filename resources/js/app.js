@@ -10,14 +10,17 @@ window.Vue = require('vue');
 window.Slug = require('slug');
 Slug.defaults.mode = "rfc3986";
 
-import BootstrapVue from 'bootstrap-vue' //Importing
-import Vue2Editor from 'vue2-editor'
-import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm'
-import { ValidationObserver } from 'vee-validate'
+import BootstrapVue from 'bootstrap-vue'; //Importing
+import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
+import { ValidationObserver } from 'vee-validate';
+// import { ImageResize } from 'quill-image-resize-module';
+
+// Register ImageResize module
+// VueQuillEditor.register('modules/imageResize', ImageResize);
+
+Vue.use(BootstrapVue); // Telling Vue to use this in whole application
 
 
-Vue.use(BootstrapVue) // Telling Vue to use this in whole application
-Vue.use(Vue2Editor)
 
 /**
  * The following block of code may be used to automatically register your
@@ -30,9 +33,10 @@ Vue.use(Vue2Editor)
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('create-article-component', require('./components/CreateArticleComponent.vue').default);
 Vue.component('slug-widget', require('./components/SlugWidget.vue').default);
+Vue.component('article-banner', require('./components/ArticleBannerComponent.vue').default);
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 

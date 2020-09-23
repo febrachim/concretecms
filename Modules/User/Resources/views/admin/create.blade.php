@@ -69,6 +69,17 @@
                     </b-form-select>
                   </div>
 
+                  <div class="form-group">
+                    <b-form-file
+                      v-model="avatar"
+                      :state="Boolean(avatar)"
+                      placeholder="Choose a file or drop it here..."
+                      drop-placeholder="Drop file here..."
+                      accept="image/jpeg, image/png"
+                      name="avatar"
+                    ></b-form-file>
+                  </div>
+
                   <div class="form-group user-checkbox">
                     {{ Form::label('password', 'Password') }}
                     <input type="password" name="password" id="password" class="form-control mb-2" v-if="!auto_password">
@@ -104,7 +115,8 @@
         el: '#app',
         data: {
         	auto_password: true,
-          rolesSelected: 4
+          rolesSelected: 4,
+          avatar: null,
         }
       });
   </script>

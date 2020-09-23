@@ -16,7 +16,9 @@
         "laravelcollective/html": "^5.8",
         "nesbot/carbon": "^2.36",
         "nwidart/laravel-modules": "^4.1",
+        "proengsoft/laravel-jsvalidation": "^3.0",
         "santigarcor/laratrust": "5.2.*",
+        "spatie/laravel-medialibrary": "^7.0.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

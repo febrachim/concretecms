@@ -73,6 +73,7 @@ class UserAdminController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
+            'avatar' =>  'required|file|mimes:jpeg,png',
         ]);
 
         if($request->has('password') && !empty($request->password)) {
@@ -102,8 +103,12 @@ class UserAdminController extends Controller
             flash('An error occured')->error()->important();
         }
 
-        if ($request->roles) {
+        if($request->roles) {
             $user->syncRoles(explode(',', $request->roles));
+        }
+
+        if($request->avatar) {
+            $user->addMedia($request->avatar)->toMediaCollection();
         }
 
         return redirect()->route('admin.user.index');

@@ -85,6 +85,14 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item">
+          <a href="{{ route('admin.media.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.media.index' ) ?  'active' : '' }}">
+            <i class="nav-icon fas fa-images"></i>
+            <p>
+              Media
+            </p>
+          </a>
+        </li>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

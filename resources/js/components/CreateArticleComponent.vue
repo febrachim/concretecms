@@ -74,7 +74,16 @@
                     label-for="input-content"
                     :state="errors[0] ? false : (valid ? true : null)"
                   >
-                    <vue-editor data-vv-name="Content" v-model="form.content"/>
+                    <!-- <vue-editor data-vv-name="Content" v-model="form.content"/> -->
+                    <quill-editor v-model="form.content"
+                      class="form-content mb-3"
+                      :options="editorOption"
+                      ref="myQuillEditor"
+                      @blur="onEditorBlur($event)"
+                      @focus="onEditorFocus($event)"
+                      @ready="onEditorReady($event)"
+                      data-vv-name="Content">
+                    </quill-editor>
                   </b-form-group>
                   <b-form-invalid-feedback id="inputLiveFeedback" class="mb-4">{{ errors[0] }}</b-form-invalid-feedback>
                 </ValidationProvider>
@@ -134,143 +143,206 @@
 </template>
 
 <script>
-    import { VueEditor } from "vue2-editor/dist/vue2-editor.core.js";
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        },
-        components: {
-            VueEditor
-        },
-        data: function() {
-            return {
-                success: false,
-                submitStatus: null,
-                value: '',
-                form: {
-                    title: '',
-                    slug: '',
-                    categories: [],
-                    excerpt: '',
-                    content: '',
-                    fileBanner: null,
-                    fileBannerMobile: null,
+  import 'quill/dist/quill.core.css'
+  import 'quill/dist/quill.snow.css'
+  import 'quill/dist/quill.bubble.css'
+
+  import { quillEditor, Quill } from 'vue-quill-editor'
+
+  // Set toolbar options
+  const toolbarOptions = [
+      [{'header': [1, 2, 3, 4, 5, 6, false]}],
+      [{'align': []}],
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+
+      [{'header': 1}, {'header': 2}],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      [{'script': 'sub'}, {'script': 'super'}],
+      [{'indent': '-1'}, {'indent': '+1'}],
+
+      // [{'size': ['small', false, 'large', 'huge']}],
+
+      [{'color': []}, {'background': []}],
+      // [{'font': []}],
+      ['link', 'image', 'video'],
+      ['clean'],
+  ];
+
+  export default {
+      components: {
+          // VueEditor,
+          quillEditor
+      },
+      data: function() {
+          return {
+              success: false,
+              submitStatus: null,
+              value: '',
+              form: {
+                  title: '',
+                  slug: '',
+                  categories: [],
+                  excerpt: '',
+                  content: '',
+                  fileBanner: null,
+                  fileBannerMobile: null,
+              },
+              editorOption: {
+                theme: 'snow',
+                modules: {
+                    toolbar: {
+                        container: toolbarOptions,
+                    },
+                    history: {
+                        delay: 1000,
+                        maxStack: 50,
+                        userOnly: false
+                    }
                 }
-            } 
-        },
-        props: {
-            options: {
-              Type: Array,
-              required: true
-            },
-            url: {
-              Type: String,
-              required: true
-            },
-            token: {
-              Type: String,
-              required: true
-            },
-            status: {
-              type: String,
-            },
-            blank: {
-              type: String
-            }
-        },
-        methods: {
-          updateSlug: function(val) {
-            this.form.slug = val;
+              },
+          } 
+      },
+      props: {
+          options: {
+            Type: Array,
+            required: true
           },
-          onSubmit(e) {
-            this.$refs.form.validate().then(success => {
-              if (!success) {
-                const errors = Object.entries(this.$refs.form.refs)
-                .map(([key, value]) => ({
-                  key,
-                  value
-                }))
-                .filter(error => {
-                  if (!error || !error.value || !error.value.failedRules) return false;
-                  return Object.keys(error.value.failedRules).length > 0;
-                });
+          url: {
+            Type: String,
+            required: true
+          },
+          token: {
+            Type: String,
+            required: true
+          },
+          status: {
+            type: String,
+          },
+          blank: {
+            type: String
+          }
+      },
+      methods: {
+        updateSlug: function(val) {
+          this.form.slug = val;
+        },
+        onEditorBlur(editor) {
+            // console.log('editor blur!', editor)
+        },
+        onEditorFocus(editor) {
+            // console.log('editor focus!', editor)
+        },
+        onEditorReady(editor) {
+            // console.log('editor ready!', editor)
+        },
+        onSubmit(e) {
+          this.$refs.form.validate().then(success => {
+            if (!success) {
+              const errors = Object.entries(this.$refs.form.refs)
+              .map(([key, value]) => ({
+                key,
+                value
+              }))
+              .filter(error => {
+                if (!error || !error.value || !error.value.failedRules) return false;
+                return Object.keys(error.value.failedRules).length > 0;
+              });
               if (errors && errors.length > 0) {
                 this.$refs.form.refs[errors[0]['key']].$el.scrollIntoView({
                   behavior: 'smooth',
                   block: 'center'
                 });
               }
+              return false;
+            } else {
+            // SUCCESS
+            console.log('submitted');
+            const config = {
+              headers: {
+                'content-type': 'multipart/form-data',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+              }
+            }
 
-                return false;
-              } else {
-                // SUCCESS
-                console.log('submitted');
-                const config = {
-                  headers: {
-                    'content-type': 'multipart/form-data',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                  }
+            let data = new FormData();
+
+            data.append('api_token', this.token);
+            data.append('title', this.form.title);
+            data.append('slug', this.form.slug);
+            data.append('categories', this.form.categories);
+            data.append('excerpt', this.form.excerpt);
+            data.append('content', this.form.content);
+            data.append('fileBanner', this.form.fileBanner, this.form.fileBanner.name);
+            data.append('fileBannerMobile', this.form.fileBannerMobile, this.form.fileBannerMobile.name);
+
+            axios.post('/api/articles/store', data, config).then(response => {
+
+              this.success = response.data.success;
+              console.log("COBA WOI");
+              console.log(this.success);
+                
+              if(response.data.success == true) {
+                
+                this.errors = [];
+
+                this.form = {
+                  title: '',
+                  slug: '',
+                  categories: [],
+                  excerpt: '',
+                  content: '',
+                  fileBanner: null,
+                  fileBannerMobile: null,
                 }
 
-                let data = new FormData();
-
-                data.append('api_token', this.token);
-                data.append('title', this.form.title);
-                data.append('slug', this.form.slug);
-                data.append('categories', this.form.categories);
-                data.append('excerpt', this.form.excerpt);
-                data.append('content', this.form.content);
-                data.append('fileBanner', this.form.fileBanner, this.form.fileBanner.name);
-                data.append('fileBannerMobile', this.form.fileBannerMobile, this.form.fileBannerMobile.name);
-
-                axios.post('/api/articles/store', data, config).then(response => {
-                  this.success = response.data.success;
-                  
-                  if(response.data.success == true) {
-                    this.errors = [];
-
-                    this.form = {
-                      title: '',
-                      slug: '',
-                      categories: [],
-                      excerpt: '',
-                      content: '',
-                      fileBanner: null,
-                      fileBannerMobile: null,
-                    }
-
-                    this.$refs.slug._data.slug = '';
-                    this.$refs.form.reset();
-                  }
-                }).catch(error => {
-                  if (error.response.status == 422) {
-                    this.errors = error.response.data;
-                  }
-                })
-
-                this.submitStatus = 'PENDING'
-                setTimeout(() => {
-                  this.submitStatus = 'OK'
-                }, 500)
+                this.$refs.slug._data.slug = '';
+                this.$refs.form.reset();
               }
-            });
-          },
+            }).catch(error => {
+              console.log(error.message);
+              if (error.response.status == 422) {
+                this.errors = error.response.data;
+              }
+            })
 
-          error(field) {
-            return _.head(field);
-          }
+            this.submitStatus = 'PENDING'
+            setTimeout(() => {
+              this.submitStatus = 'OK'
+            }, 500)
+            }
+          });
+        },
+
+        error(field) {
+          return _.head(field);
         }
-    }
+      },
+      computed: {
+          editor(){
+              return this.$refs.myQuillEditor.quill
+          }
+      },
+  }
 </script>
 <style lang="css" scope>
-    @import "~vue2-editor/dist/vue2-editor.css";
+    /*@import "~vue2-editor/dist/vue2-editor.css";*/
 
     /* Import the Quill styles you want */
     /*@import '~quill/dist/quill.core.css';*/
     /*@import '~quill/dist/quill.bubble.css';*/
-    @import '~quill/dist/quill.snow.css';
+    /*@import '~quill/dist/quill.snow.css';*/
+
 
     .font-weight-normal label {
-        font-weight: 400 !important;
+      font-weight: 400 !important;
+    }
+
+    #fieldset-content.is-invalid .quillWrapper {
+      border: 1px solid #dc3545 !important;
+    }
+
+    .form-content .ql-editor {
+      height: 250px;
     }
 </style>

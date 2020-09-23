@@ -3,7 +3,8 @@
 return [
     'name' => [
     	'index' => 'Articles',
-    	'create' => 'Create Article'
+    	'create' => 'Create Article',
+    	'show' => 'Article Detail'
     ],
     'status' => [
 		'0'	=> 'Draft',

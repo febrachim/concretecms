@@ -11,6 +11,7 @@ use Modules\Category\Entities\Category;
 use App\Http\Controllers\Controller;
 use Coderello\Laraflash\Facades\Laraflash;
 use Carbon\Carbon;
+use Validator,Redirect;
 
 class ArticleAdminController extends Controller
 {
@@ -27,7 +28,7 @@ class ArticleAdminController extends Controller
             return datatables()->of(Article::with('categories', 'author')
                 ->get())
                     ->addColumn('action', function($data) {
-                        $button = '<button type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></button>';
+                        $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
                         $button .= '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></button>';
                         $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat btn-sm mr-1"><i class="fas fa-trash fa-sm"></i></button>';
                         return $button;
@@ -84,7 +85,7 @@ class ArticleAdminController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'slug' => 'required',
-            "categories" => "required",
+            'categories' => 'required',
             'excerpt' => 'required',
             'content' => 'required',
             'fileBanner' => 'required',
@@ -94,28 +95,8 @@ class ArticleAdminController extends Controller
         $banner_path = '';
         $banner_mobile_path = '';
 
-
-        // Check if banner is not null
-        if($request->has('fileBanner')){
-            $banner = $request->file('fileBanner');
-
-            // Set banner name
-            $banner_name = 'banner-' . $request->input('slug') . '-' . time() . '.' . $banner->getClientOriginalExtension();
-
-            // Save banner to public/uploads directory
-            $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
-        }
-
-        // Check if mobile banner is not null
-        if($request->has('fileBannerMobile')){
-            $banner_mobile = $request->file('fileBannerMobile');
-
-            // Set mobile banner name
-            $banner_mobile_name = 'banner-mobile-' . $request->input('slug') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
-
-            // Save mobile banner to public/uploads directory
-            $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
-        }
+        // Quill Editor Images
+        // $images = $request->images;
 
 
         // // return as JSON
@@ -137,24 +118,82 @@ class ArticleAdminController extends Controller
         $article->excerpt = $request->input('excerpt');
         $article->content = $request->input('content');
         $article->author_id = $user_id;
-        $article->banner = $banner_path;
-        $article->banner_mobile = $banner_mobile_path;
+        $article->banner = 'uploads/'.$banner_path;
+        $article->banner_mobile = 'uploads/'.$banner_mobile_path;
         $article->published_at = Carbon::now();
 
+        // If Quill Editor images not empty
+
+        // if(!empty($request->input('images'))) {
+        //     foreach ($images as $image)
+        //     {
+        //         $article->content = str_replace($image, '1', $article->content);
+
+        //         // Create a new image from base64 string and attach it to article in article-images collection
+        //         $article->addMediaFromBase64($image)->toMediaCollection('article-images');
+
+        //         // Get all images as we will need the last one uploaded
+        //         $mediaItems = $article->load('media')->getMedia('article-images');
+
+        //         // Replace the base64 string in article body with the url of the last uploaded image
+        //         $article->content = str_replace($image, $mediaItems[count($mediaItems) - 1]->getFullUrl(), $article->content);
+        //     }
+        // }
+
         $article->save();
+
+        $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+        if($article->save()){ 
+            $arr = array('msg' => 'Article Added Successfully!', 'status' => true);
+        }
+
+
+        // Make array categories
+        // $categoriesArray = explode(',', $request->input('categories'));
+        $currentArticle = Article::where('slug', '=', $request->input('slug'))->first();
+        $currentArticle->categories()->sync($request->input('categories'));
+
+
+        // Check if banner is not null
+        if($request->has('fileBanner')){
+            $currentArticle->addMedia($request->fileBanner)->toMediaCollection('article-banner');
+
+            // $banner = $request->file('fileBanner');
+
+            // // Set banner name
+            // $banner_name = 'banner-' . $request->input('slug') . '-' . time() . '.' . $banner->getClientOriginalExtension();
+
+            // // Save banner to public/uploads directory
+            // $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
+        }
+
+        // Check if mobile banner is not null
+        if($request->has('fileBannerMobile')){
+            $currentArticle->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
+            
+            // $banner_mobile = $request->file('fileBannerMobile');
+
+            // // Set mobile banner name
+            // $banner_mobile_name = 'banner-mobile-' . $request->input('slug') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
+
+            // // Save mobile banner to public/uploads directory
+            // $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
+        }
 
 
         // return redirect('backoffice/article')->with('success', 'Article Created');
 
         // return json_encode($request->all());
         // return as JSON
-        return response()->json([
-            'success' => true,
-            'banner_name' => $banner_name,
-            'banner_path' => $banner_path,
-            'banner_mobile_name' => $banner_mobile_name,
-            'banner_mobile_path' => $banner_mobile_path,
-        ]);
+        return Response()->json($arr);
+
+        // if($article->save()) {
+        //     flash('Article sucessfully created')->success();
+        // } else {
+        //     flash('An error occured')->error()->important();
+        // }
+
+        // return redirect()->route('admin.article.index');
     }
 
     /**
@@ -164,7 +203,14 @@ class ArticleAdminController extends Controller
      */
     public function show($id)
     {
-        return view('article::show');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $article = Article::where('id', $id)->with('categories')->first();
+
+        return view('article::admin.show')->with(
+            array(
+                'name' => $name,
+                'article' => $article
+            ));
     }
 
     /**

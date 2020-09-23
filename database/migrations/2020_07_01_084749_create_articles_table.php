@@ -31,6 +31,8 @@ class CreateArticlesTable extends Migration
             $table->foreign('author_id')
                   ->references('id')->on('users')
                   ->onDelete('cascade');
+
+            $table->index(['author_id', 'slug']);
         });
     }
 
