@@ -81,12 +81,11 @@
             <div class="card-body">
 
               <b-form-group id="fieldset-title" label="Title" label-for="input-title">
-                <b-form-input type="text" name="title" id="input-title" size="lg" placeholder="" v-model="form.title" ref="title"></b-form-input>
+                <b-form-input type="text" name="title" id="input-title" size="lg" placeholder="" v-model="form.title" ref="title" autocomplete="off"></b-form-input>
 
                 <slug-widget ref="slug" name="slug-edit" :url="url" subdirectory="article" :title="form.title" @slug-changed="updateSlug"></slug-widget>
 
-                <input type="hidden" name="slug" :value="form.slug">
-                <span class="text-danger">{{ $errors->first('title') }}</span>
+                <input type="hidden" name="slug" :value="form.slug" class="ignore" id="form-slug">
               </b-form-group>
 
               <b-form-group id="fieldset-excerpt" label="Excerpt" label-for="input-excerpt">
@@ -101,46 +100,42 @@
                 <span class="text-danger">{{ $errors->first('excerpt') }}</span>
               </b-form-group>
 
-              <b-form-group id="fieldset-content" label="Content" label-for="input-content">
-                <b-form-textarea
-                id="input-content"
-                v-model="form.content"
-                placeholder=""
-                rows="4"
-                max-rows="6"
-                name="content"
-                ></b-form-textarea>
-                <span class="text-danger">{{ $errors->first('content') }}</span>
+              <b-form-group id="fieldset-content" label="Content" label-for="input-content" class="mb-0">
+                <text-editor :content="form.content" @content-changed="updateContent" />
               </b-form-group>
 
+              <b-form-group class="mt-0">
+                <input name="content" type="hidden" :value="form.content" id="form-content">
+              </b-form-group> 
+
               <b-form-group label="Banner Image" label-for="file-banner">
-                <div class="custom-file">
-                  {{ Form::file('fileBanner', ['class' => 'custom-file-input', 'id' => 'fileBanner']) }}
+                {{-- <div class="custom-file">
+                  {{ Form::file('fileBanner', ['class' => 'custom-file-input', 'id' => 'fileBanner', 'accept' => 'image/jpeg, image/png']) }}
                   <label class="custom-file-label" for="fileBanner">Choose file</label>
-                </div>
-                {{-- <b-form-file
+                </div> --}}
+                <b-form-file
                 v-model="form.fileBanner"
                 label="Banner Image"
                 placeholder="Choose a file or drop it here..."
                 drop-placeholder="Drop file here..."
-                name="banner"
+                name="fileBanner"
                 accept="image/jpeg, image/png"
-                ></b-form-file> --}}
+                ></b-form-file>
               </b-form-group>
 
               <b-form-group label="Mobile Banner Image" label-for="file-banner">
-                <div class="custom-file">
-                  {{ Form::file('fileBannerMobile', ['class' => 'custom-file-input', 'id' => 'fileBannerMobile']) }}
+                {{-- <div class="custom-file">
+                  {{ Form::file('fileBannerMobile', ['class' => 'custom-file-input', 'id' => 'fileBannerMobile', 'accept' => 'image/jpeg, image/png']) }}
                   <label class="custom-file-label" for="fileBannerMobile">Choose file</label>
-                </div>
-                {{-- <b-form-file
+                </div> --}}
+                <b-form-file
                 v-model="form.fileBannerMobile"
                 label="Mobile Banner Image"
                 placeholder="Choose a file or drop it here..."
                 drop-placeholder="Drop file here..."
-                name="banner_mobile"
+                name="fileBannerMobile"
                 accept="image/jpeg, image/png"
-                ></b-form-file> --}}
+                ></b-form-file>
               </b-form-group>
 
               <b-form-group>
@@ -182,19 +177,26 @@
       methods: {
         updateSlug: function(val) {
           this.form.slug = val;
+          $('#form-slug').valid();
+        },
+        updateContent: function(val) {
+          this.form.content = val;
+          $('#form-content').valid();
         },
       }
     });
 
-    $('.custom-file-input').on('change',function(e){
-      //get the file name
-      var fileName = e.target.files[0].name;
-      //replace the "Choose a file" label
-      $(this).next('.custom-file-label').html(fileName);
-    });
+    // $('.custom-file-input').on('change',function(){
+    //   //get the file name
+    //   var fileName = $(this).target.files[0].name;
+    //   //replace the "Choose a file" label
+    //   $(this).next('.custom-file-label').html(fileName);
+    // });
 
+    // FORM VALIDATION
     if ($("#article-form").length > 0) {
       $("#article-form").validate({
+        ignore: ".ignore",
         rules: {
           title: {
             required: true
@@ -246,7 +248,7 @@
           },
         },
         errorElement : 'small',
-        ignore: ':hidden:not(:checkbox)',
+        // ignore: ':hidden:not(:checkbox)',
         errorPlacement: function (error, element) {
           if (element.is(":checkbox")) {
             $('#categories-error').append(error);
