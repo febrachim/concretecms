@@ -41,9 +41,9 @@ Vue.use(Vue2Editor);
 // Vue.component('create-article-component', require('./components/CreateArticleComponent.vue').default);
 Vue.component('slug-widget', require('./components/SlugWidget.vue').default);
 Vue.component('article-banner', require('./components/ArticleBannerComponent.vue').default);
-Vue.component('text-editor', require('./components/TextEditor.vue').default);
-Vue.component('ValidationProvider', ValidationProvider);
-Vue.component('ValidationObserver', ValidationObserver);
+// Vue.component('text-editor', require('./components/TextEditor.vue').default);
+// Vue.component('ValidationProvider', ValidationProvider);
+// Vue.component('ValidationObserver', ValidationObserver);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

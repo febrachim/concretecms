@@ -92,9 +92,6 @@ class ArticleAdminController extends Controller
             'fileBannerMobile' => 'required',
         ]);
 
-        $banner_path = '';
-        $banner_mobile_path = '';
-
         // Quill Editor Images
         // $images = $request->images;
 
@@ -118,8 +115,8 @@ class ArticleAdminController extends Controller
         $article->excerpt = $request->input('excerpt');
         $article->content = $request->input('content');
         $article->author_id = $user_id;
-        $article->banner = 'uploads/'.$banner_path;
-        $article->banner_mobile = 'uploads/'.$banner_mobile_path;
+        // $article->banner = 'uploads/'.$banner_path;
+        // $article->banner_mobile = 'uploads/'.$banner_mobile_path;
         $article->published_at = Carbon::now();
 
         // If Quill Editor images not empty
@@ -140,6 +137,18 @@ class ArticleAdminController extends Controller
         //     }
         // }
 
+        // Check if banner is not null
+        if($request->has('fileBanner')){
+            $banner = $article->addMedia($request->fileBanner)->toMediaCollection('article-banner');
+            $article->banner_id = $banner->id;
+        }
+
+        // Check if mobile banner is not null
+        if($request->has('fileBannerMobile')){
+            $banner_mobile = $article->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
+            $article->banner_mobile_id = $banner_mobile->id;
+        }
+
         $article->save();
 
         $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
@@ -154,31 +163,31 @@ class ArticleAdminController extends Controller
         $currentArticle->categories()->sync($request->input('categories'));
 
 
-        // Check if banner is not null
-        if($request->has('fileBanner')){
-            $currentArticle->addMedia($request->fileBanner)->toMediaCollection('article-banner');
+        // // Check if banner is not null
+        // if($request->has('fileBanner')){
+        //     $currentArticle->addMedia($request->fileBanner)->toMediaCollection('article-banner');
 
-            // $banner = $request->file('fileBanner');
+        //     // $banner = $request->file('fileBanner');
 
-            // // Set banner name
-            // $banner_name = 'banner-' . $request->input('slug') . '-' . time() . '.' . $banner->getClientOriginalExtension();
+        //     // // Set banner name
+        //     // $banner_name = 'banner-' . $request->input('slug') . '-' . time() . '.' . $banner->getClientOriginalExtension();
 
-            // // Save banner to public/uploads directory
-            // $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
-        }
+        //     // // Save banner to public/uploads directory
+        //     // $banner_path = $banner->storeAs('banner', $banner_name, 'public_uploads');
+        // }
 
-        // Check if mobile banner is not null
-        if($request->has('fileBannerMobile')){
-            $currentArticle->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
+        // // Check if mobile banner is not null
+        // if($request->has('fileBannerMobile')){
+        //     $currentArticle->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
             
-            // $banner_mobile = $request->file('fileBannerMobile');
+        //     // $banner_mobile = $request->file('fileBannerMobile');
 
-            // // Set mobile banner name
-            // $banner_mobile_name = 'banner-mobile-' . $request->input('slug') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
+        //     // // Set mobile banner name
+        //     // $banner_mobile_name = 'banner-mobile-' . $request->input('slug') . '-' . time() . '.' . $banner_mobile->getClientOriginalExtension();
 
-            // // Save mobile banner to public/uploads directory
-            // $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
-        }
+        //     // // Save mobile banner to public/uploads directory
+        //     // $banner_mobile_path = $banner_mobile->storeAs('banner', $banner_mobile_name, 'public_uploads');
+        // }
 
 
         // return redirect('backoffice/article')->with('success', 'Article Created');

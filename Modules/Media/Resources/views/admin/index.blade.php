@@ -29,13 +29,14 @@
 <!-- Main content -->
 <section class="content">
 	<div class="container-fluid">
+		<pre>
+			{{-- {{ dd($articles) }} --}}
+		</pre>
 		<div class="row">
 			<div class="col-md-12">
 				<form action="{{ route('admin.media.store') }}" method="post" enctype="multipart/form-data">
-					@csrf
-
+					@csrf					
 					
-
 					<div class="form-row align-items-center">
 						<div class="col-6">
 							<b-form-group label="Upload New Media" label-for="upload-media" label-cols="auto" label-size="sm">
@@ -74,7 +75,7 @@
 								</div>
 							</div>
 							<!-- /.btn-group -->
-
+							
 							<div class="float-right">
 								<div class="input-group input-group-sm">
 									<input type="text" class="form-control" placeholder="Search Media">
@@ -90,13 +91,23 @@
 					</div>
 					<div class="card-body">
 						<div class="row text-center text-lg-left">
-							@for ($i = 0; $i < 12; $i++)
+							@foreach ($articles as $article)
+							@foreach ($article->getMedia('article-banner') as $image)
+							<div class="col-lg-3 col-md-4 col-6">
+								<a href="#" class="d-block mb-4 h-100">
+									<img class="img-fluid img-thumbnail" src="{{ asset($image->getUrl()) }}" alt="">
+								</a>
+							</div>
+							@endforeach
+							@endforeach
+							
+							{{-- @for ($i = 0; $i < 12; $i++)
 							<div class="col-lg-3 col-md-4 col-6">
 								<a href="#" class="d-block mb-4 h-100">
 									<img class="img-fluid img-thumbnail" src="https://source.unsplash.com/pWkk7iiCoDM/400x300" alt="">
 								</a>
 							</div>
-							@endfor
+							@endfor --}}
 						</div>
 					</div>
 					<!-- /.card-body -->
@@ -125,7 +136,7 @@
 		},
 		methods: {
 			updateSlug: function(val) {
-			  this.slug = val;
+				this.slug = val;
 			}
 		}
 	});
