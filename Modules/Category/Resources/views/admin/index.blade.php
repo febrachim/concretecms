@@ -45,12 +45,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{!! config('user.name.index') !!}</h1>
+        <h1 class="m-0 text-dark">{!! config('category.name.index') !!}</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
-          <li class="breadcrumb-item active">{!! config('user.name.index') !!}</li>
+          <li class="breadcrumb-item active">{!! config('category.name.index') !!}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -64,14 +64,13 @@
       <div class="col-md-12">
         <div class="card card-primary card-outline">
           <div class="card-body">
-            <table id="userTable" class="table table-bordered table table-hover dataTable dtr-inline">
+            <table id="categoryTable" class="table table-bordered table table-hover dataTable dtr-inline">
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Registered At</th>
-                  <th>Actions</th>
+                  <th>Slug</th>
+                  <th>Count</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,12 +98,12 @@
   jQuery(document).ready(function($){
     $.noConflict();
     
-    var table = $('#userTable').DataTable({
+    var table = $('#categoryTable').DataTable({
       autoWidth: false,
       processing: true,
       serverSide: true,
       ajax:{
-        url: "{{ route('admin.user.index') }}"
+        url: "{{ route('admin.category.index') }}"
       },
       columns: [
       {
@@ -112,23 +111,13 @@
         name: 'name'
       },
       {
-        data: 'email',
-        name: 'email',
+        data: 'slug',
+        name: 'slug',
       },
       {
-        data: function (row) {
-          let roleNames= [];
-          $(row.roles).each(function (i, e) {
-            roleNames.push(e.name);
-          });
-          return roleNames.join(", ")
-        },
-        name: 'roles',
+        data: 'count',
+        name: 'count',
         orderable: false
-      },
-      {
-        data: 'created_at',
-        name: 'created_at'
       },
       {
         data: 'action',
@@ -138,11 +127,10 @@
       ]
     });
     
-    var user_id;
-    var current_user_id = {{ $current_user_id }};
+    var category_id;
     
-    $(document).on('click', '.deleteUser ', function() {
-      user_id = $(this).attr('id');
+    $(document).on('click', '.deleteCategory ', function() {
+      category_id = $(this).attr('id');
       $('#confirmModal').modal('show');
     });
     
@@ -155,17 +143,12 @@
       });
       
       $.ajax({
-        url: '/backoffice/user/delete/'+user_id,
+        url: '/backoffice/category/delete/'+category_id,
         data:{
-          'user_id': user_id,
-          'current_user_id': current_user_id,
+          'category_id': category_id,
           '_token': '{{ csrf_token() }}',
         },
         beforeSend: function() {
-          if(user_id == current_user_id) {
-            alert('cannot delete your own account!');
-            return false;
-          }
           $('#ok_button').text('Deleting...');
           $('#ok_button').addClass('disabled');
         },
@@ -186,7 +169,5 @@
       })
     });
   });
-  
-  $('div.alert').not('.alert-danger').delay(2500).fadeOut(500);
 </script>
 @stop

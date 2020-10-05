@@ -20,8 +20,8 @@ class Article extends Model implements HasMedia
         'content',
         'status',
         'type',
-        'banner',
-        'banner_mobile',
+        'banner_id',
+        'banner_mobile_id',
         'comment_count',
         'published_at'
     ];
@@ -37,26 +37,31 @@ class Article extends Model implements HasMedia
     
     public function registerMediaCollections() {
         $this->addMediaCollection('article-banner')
+        ->singleFile()
         ->registerMediaConversions(function (Media $media) {
             $this
             ->addMediaConversion('thumb')
             ->width(400)
-            ->height(300);
+            ->height(300)
+            ->sharpen(10);
             $this
             ->addMediaConversion('display')
             ->width(1920)
-            ->height(1080);
+            ->sharpen(10);
         });
         $this->addMediaCollection('article-mobile-banner')
+        ->singleFile()
         ->registerMediaConversions(function (Media $media) {
             $this
             ->addMediaConversion('thumb')
             ->width(400)
-            ->height(300);
+            ->height(300)
+            ->sharpen(10);
             $this
             ->addMediaConversion('display')
             ->width(640)
-            ->height(480);
+            ->height(480)
+            ->sharpen(10);
         });
     }
     

@@ -11,7 +11,11 @@ use Modules\Category\Entities\Category;
 use App\Http\Controllers\Controller;
 use Coderello\Laraflash\Facades\Laraflash;
 use Carbon\Carbon;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Validator,Redirect;
+use Session;
 
 class ArticleAdminController extends Controller
 {
@@ -20,17 +24,23 @@ class ArticleAdminController extends Controller
     }
     /**
      * Display a listing of the resource.
+     * @param int $id
      * @return Response
      */
     public function index()
     {
+        $articles = Article::with('categories', 'author')->get();
+
+        $mode = 'all';
+        $id = 0;
+        $category = '';
+
         if(request()->ajax()) {
-            return datatables()->of(Article::with('categories', 'author')
-                ->get())
+            return datatables()->of($articles)
                     ->addColumn('action', function($data) {
                         $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
                         $button .= '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></button>';
-                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="btn btn-danger btn-flat btn-sm mr-1"><i class="fas fa-trash fa-sm"></i></button>';
+                        $button .= '<button type="button" class="btn btn-danger btn-flat btn-sm mr-1 deleteArticle" data-toggle="modal" data-target="#deleteModal" id="'.$data->id.'"><i class="fas fa-trash fa-sm"></i></button>';
                         return $button;
                     })
                     ->editColumn('created_at', function ($article) {
@@ -49,7 +59,10 @@ class ArticleAdminController extends Controller
         return view('article::admin.index')->with(
             array(
                 'name' => $name,
+                'category' => $category,
                 'categories' => $categories,
+                'mode' => $mode,
+                'id' => $id
             ));
     }
 
@@ -140,14 +153,16 @@ class ArticleAdminController extends Controller
         // Check if banner is not null
         if($request->has('fileBanner')){
             $banner = $article->addMedia($request->fileBanner)->toMediaCollection('article-banner');
-            $article->banner_id = $banner->id;
+            // $banner_id = $banner->id;
         }
 
         // Check if mobile banner is not null
         if($request->has('fileBannerMobile')){
             $banner_mobile = $article->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
-            $article->banner_mobile_id = $banner_mobile->id;
+            // $banner_mobile_id = $banner_mobile->id;
         }
+
+        // $article->comment_count = $banner->id;
 
         $article->save();
 
@@ -250,6 +265,69 @@ class ArticleAdminController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        // delete
+        $article = Article::findOrFail($id);
+        $article_title = $article->title;
+        $article->delete();
+
+        // failed
+        $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+
+        // success
+        if($article->delete()){ 
+            $arr = array('msg' => 'Successfully delete article '.$article_title, 'status' => true);
+            Session::flash('message', 'Successfully delete article '.$article_title);
+        }
+
+        // redirect
+        return Response()->json($arr);
+    }
+
+    /**
+     * Show list of articles sort by article category id
+     * @param int $id
+     * @return Response
+     */
+    public function showArticleByCategory($id = 0) {
+        $articles = Article::with(['categories', 'author'])
+        ->whereHas('categories', function($q) use($id) {
+            $q->where('categories.id', '=', $id);
+        })->get();
+
+        $mode = 'sorted';
+
+        if(request()->ajax()) {
+            return datatables()->of($articles)
+                    ->addColumn('action', function($data) {
+                        $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
+                        $button .= '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></button>';
+                        $button .= '<button type="button" class="btn btn-danger btn-flat btn-sm mr-1 deleteArticle" data-toggle="modal" data-target="#deleteModal" id="'.$data->id.'"><i class="fas fa-trash fa-sm"></i></button>';
+                        return $button;
+                    })
+                    ->editColumn('created_at', function ($article) {
+                        return $article->created_at ? with(new Carbon($article->created_at))->format('d F Y') : '';
+                    })
+                    ->editColumn('published_at', function ($article) {
+                        return $article->published_at ? with(new Carbon($article->published_at))->format('d F Y') : '';
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+        $category = Category::findOrFail($id);
+
+        $categories = Category::withCount('articles')->get();
+
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        return view('article::admin.index')->with(
+            array(
+                'name' => $name,
+                'category' => $category,
+                'categories' => $categories,
+                'mode' => $mode,
+                'id' => $id
+            )
+        );
     }
 }

@@ -41,13 +41,13 @@
                 </h3>
               </div><!-- /.card-header -->
               <div class="card-body">
-                <picture>
-                  <source srcset="{{ $article->banner_mobile }}" media="(max-width: 767px)"/>
-                  <source srcset="{{ $article->banner_mobile }}" media="(max-device-width: 800px) and (orientation: portrait)"/>
-                  <img src="{{ $article->banner }}" alt="Article Banner"/>
-                </picture>
                 <!-- Banner -->
-                <article-banner :src="src"></article-banner>
+                <picture>
+                  <source srcset="{{ $article->getFirstMediaUrl('article-mobile-banner', 'display') }}" media="(max-width: 767px)"/>
+                  <source srcset="{{ $article->getFirstMediaUrl('article-mobile-banner', 'display') }}" media="(max-device-width: 800px) and (orientation: portrait)"/>
+                  <img src="{{ $article->getFirstMediaUrl('article-banner', 'display') }}" alt="Article Banner"/>
+                </picture>
+
                 <ul class="todo-list my-2">
                   <li class="" style="">
                     <p>

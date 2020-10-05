@@ -21,7 +21,7 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar nav-child-indent flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item">
@@ -33,8 +33,8 @@
             </p>
           </a>
         </li>
-        <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.article.') === 0 ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.article.') === 0 ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.article.') === 0 || strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.article.') === 0 || strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'active' : '' }}">
             <i class="nav-icon fas fa-file-alt"></i>
             <p>
               Articles
@@ -54,11 +54,22 @@
                 <p>Add New</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'menu-open' : '' }}">
               <a href="#" class="nav-link">
                 <i class="fas fa-caret-right nav-icon fa-xs"></i>
-                <p>Categories</p>
+                <p>
+                  Categories
+                  <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview" style="{{ strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'display: block;' : 'display: none;' }}">
+                <li class="nav-item">
+                  <a href="{{ route('admin.category.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.category.index' ) ?  'active' : '' }}">
+                    <i class="fas fa-angle-right"></i>
+                    <p>All Categories</p>
+                  </a>
+                </li>
+              </ul>
             </li>
           </ul>
         </li>

@@ -188,12 +188,12 @@
         },
       });
       
-      // $('.custom-file-input').on('change',function(){
-        //   //get the file name
-        //   var fileName = $(this).target.files[0].name;
-        //   //replace the "Choose a file" label
-        //   $(this).next('.custom-file-label').html(fileName);
-        // });
+      $('.custom-file-input').on('change',function(){
+          //get the file name
+          var fileName = $(this).target.files[0].name;
+          //replace the "Choose a file" label
+          $(this).next('.custom-file-label').html(fileName);
+        });
         
         // FORM VALIDATION
         if ($("#article-form").length > 0) {

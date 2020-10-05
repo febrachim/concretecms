@@ -202,10 +202,22 @@ class UserAdminController extends Controller
     {
         // delete
         $user = User::findOrFail($id);
-        $user->delete();
+
+        if($user->delete()){
+            // success
+            $arr = array('msg' => 'Successfully delete user data', 'status' => true);
+            Session::flash('success', 'Successfully delete user data');
+        } else {
+            // failed
+            $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+            Session::flash('error', 'Something went wrong. Please try again!');
+        }
+
+        // pass sub view alert
+        return view('backoffice::inc.messages'); 
 
         // redirect
-        Session::flash('message', 'Successfully delete user data');
-        return redirect()->route('admin.user.index');
+        // return Response()->json($arr);
+        // return redirect()->route('admin.user.index');
     }
 }
