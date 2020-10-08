@@ -316,6 +316,8 @@ class ArticleAdminController extends Controller
         $article = Article::findOrFail($id);
         $article_title = $article->title;
         $article->delete();
+        $article->clearMediaCollection('article-banner');
+        $article->clearMediaCollection('article-mobile-banner');
 
         // failed
         $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
