@@ -84,6 +84,11 @@ class ArticleController extends Controller
     }
 
     public function apiCheckUnique(Request $request) {
-        return json_encode(!Article::where('slug', '=', $request->slug)->exists());
+        $article = Article::where('slug', '=', $request->slug);
+        if($request->slug != $request->defaultslug) {
+            return json_encode(!$article->exists());
+        } else {
+            return true;
+        }
     }
 }

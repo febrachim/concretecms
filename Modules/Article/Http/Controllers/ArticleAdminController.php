@@ -38,8 +38,8 @@ class ArticleAdminController extends Controller
         if(request()->ajax()) {
             return datatables()->of($articles)
                     ->addColumn('action', function($data) {
-                        $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
-                        $button .= '<button type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></button>';
+                        $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id=view-article-"'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1"><i class="fas fa-eye fa-sm"></i></a>';
+                        $button .= '<a href="'.route('admin.article.edit', $data->id).'" type="button" name="edit" id=edit-article-"'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></a>';
                         $button .= '<button type="button" class="btn btn-danger btn-flat btn-sm mr-1 deleteArticle" data-toggle="modal" data-target="#deleteModal" id="'.$data->id.'"><i class="fas fa-trash fa-sm"></i></button>';
                         return $button;
                     })
@@ -244,7 +244,22 @@ class ArticleAdminController extends Controller
      */
     public function edit($id)
     {
-        return view('article::edit');
+        $article = Article::find($id);
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        $checkbox_categories = [];
+        $categories = Category::all();
+        foreach ($categories as $key => $category) {
+            $checkbox_categories[$key]['text'] = $category->name;
+            $checkbox_categories[$key]['value'] = $category->id;
+        }
+
+        return view('article::admin.edit')->with(
+            array(
+                'name' => $name,
+                'categories' => $categories,
+                'checkbox_categories' => $checkbox_categories,
+                'article' => $article,
+            ));
     }
 
     /**
@@ -255,7 +270,38 @@ class ArticleAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'slug' => 'required|unique:articles,slug,'.$id,
+            'categories' => 'required',
+            'excerpt' => 'required',
+            'content' => 'required',
+            // 'fileBanner' => 'mimes:jpeg,jpg,png|max:20000',
+            // 'fileBannerMobile' => 'mimes:jpeg,jpg,png|max:20000',
+        ]);
+
+        $article = Article::findOrFail($id);
+        $article->title = $request->title;
+        $article->slug = $request->slug;
+        $article->excerpt = $request->excerpt;
+        $article->content = $request->content;
+
+        // Check if banner is not null
+        if($request->has('fileBanner')){
+            $banner = $article->addMedia($request->fileBanner)->toMediaCollection('article-banner');
+        }
+
+        // Check if mobile banner is not null
+        if($request->has('fileBannerMobile')){
+            $banner_mobile = $article->addMedia($request->fileBannerMobile)->toMediaCollection('article-mobile-banner');
+        }
+
+        $article->save();
+        $article->categories()->sync($request->categories);
+        
+        return redirect()->route('admin.article.index');
+
+        // return $request->all();
     }
 
     /**

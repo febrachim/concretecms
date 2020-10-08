@@ -51,7 +51,7 @@
             <li class="nav-item">
               <a href="{{ route('admin.article.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.article.create' ) ?  'active' : '' }}">
                 <i class="fas fa-caret-right nav-icon fa-xs"></i>
-                <p>Add New</p>
+                <p>Add New Article</p>
               </a>
             </li>
             <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'menu-open' : '' }}">
@@ -67,6 +67,12 @@
                   <a href="{{ route('admin.category.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.category.index' ) ?  'active' : '' }}">
                     <i class="fas fa-angle-right"></i>
                     <p>All Categories</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-angle-right"></i>
+                    <p>Add New Category</p>
                   </a>
                 </li>
               </ul>

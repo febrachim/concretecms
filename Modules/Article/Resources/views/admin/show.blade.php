@@ -45,7 +45,7 @@
                 <picture>
                   <source srcset="{{ $article->getFirstMediaUrl('article-mobile-banner', 'display') }}" media="(max-width: 767px)"/>
                   <source srcset="{{ $article->getFirstMediaUrl('article-mobile-banner', 'display') }}" media="(max-device-width: 800px) and (orientation: portrait)"/>
-                  <img src="{{ $article->getFirstMediaUrl('article-banner', 'display') }}" alt="Article Banner"/>
+                  <b-img src="{{ $article->getFirstMediaUrl('article-banner', 'display') }}" fluid-grow alt="Article Banner"></b-img>
                 </picture>
 
                 <ul class="todo-list my-2">

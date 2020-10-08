@@ -22,6 +22,8 @@ Route::prefix('backoffice')->group(function() {
 		Route::get('/articles-by-category/{id}', ['as' => 'category', 'uses' => 'ArticleAdminController@showArticleByCategory']);
 		Route::get('/create', ['as' => 'create', 'uses' => 'ArticleAdminController@create']);
 		Route::post('', ['as' => 'store', 'uses' => 'ArticleAdminController@store']);
+		Route::get('/{id}/edit/', ['as' => 'edit', 'uses' => 'ArticleAdminController@edit']);
+		Route::match(['put', 'patch'], '/{id}/update', ['as' => 'update', 'uses' => 'ArticleAdminController@update']);
 		Route::get('/delete/{id}', ['as' => 'delete', 'uses' => 'ArticleAdminController@destroy']);
 	});
 });

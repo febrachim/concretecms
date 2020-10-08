@@ -37,10 +37,10 @@ Vue.use(Vue2Editor);
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('create-article-component', require('./components/CreateArticleComponent.vue').default);
 Vue.component('slug-widget', require('./components/SlugWidget.vue').default);
-Vue.component('article-banner', require('./components/ArticleBannerComponent.vue').default);
+// Vue.component('article-banner', require('./components/ArticleBannerComponent.vue').default);
 // Vue.component('text-editor', require('./components/TextEditor.vue').default);
 // Vue.component('ValidationProvider', ValidationProvider);
 // Vue.component('ValidationObserver', ValidationObserver);
