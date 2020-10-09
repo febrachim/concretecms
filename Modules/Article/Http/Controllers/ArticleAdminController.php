@@ -315,9 +315,11 @@ class ArticleAdminController extends Controller
         // delete
         $article = Article::findOrFail($id);
         $article_title = $article->title;
-        $article->delete();
+        // $article->delete();
         $article->clearMediaCollection('article-banner');
         $article->clearMediaCollection('article-mobile-banner');
+
+        $article->categories()->detach();
 
         // failed
         $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);

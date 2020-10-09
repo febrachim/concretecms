@@ -70,7 +70,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="{{ route('admin.category.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.category.create' ) ?  'active' : '' }}">
                     <i class="fas fa-angle-right"></i>
                     <p>Add New Category</p>
                   </a>
@@ -81,7 +81,7 @@
         </li>
         <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-alt"></i>
+            <i class="nav-icon fas fa-users"></i>
             <p>
               Users
               <i class="right fas fa-angle-left"></i>

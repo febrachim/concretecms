@@ -12,13 +12,7 @@ class CategoriesTableSeeder extends Seeder
     public function run()
     {
         DB::table('categories')->insert([
-            'name' => 'News',
-            'slug' => 'news',
-        ]);
-
-        DB::table('categories')->insert([
-            'name' => 'Entertainment',
-            'slug' => 'entertainment',
+            'name' => 'Default',
         ]);
     }
 }

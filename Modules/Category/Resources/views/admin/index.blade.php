@@ -25,7 +25,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <h5>Are you sure want delete this user?</h5>
+        <h5>Are you sure want delete this category?</h5>
         <span class="text-danger">
           <small>
             Warning: This action cannot be undone
@@ -40,6 +40,22 @@
   </div>
 </div>
 
+@if (Session::has('success'))
+<div class="container-fluid">
+  <div>
+    <b-alert
+      fade
+      :show="dismissSecs"
+      dismissible
+      variant="success"
+      @dismissed="dismissCountDown=0"
+      @dismiss-count-down="countDownChanged"
+    >
+      {{ Session::get('success') }}
+    </b-alert>
+  </div>
+</div>
+@endif
 <!-- Content Header (Page header) -->
 <div class="content-header">
   <div class="container-fluid">
@@ -61,7 +77,43 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-3 order-md-2">
+        {{ Form::open([
+          'route' => 'admin.category.store',
+          'method' => 'POST'
+          ]) }}
+          
+          {!! csrf_field() !!}
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">New Category</h3>
+              
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body pt-2 pb-0">
+              <b-form-group id="fieldset-name" label-class="font-weight-normal" label="Name" label-for="input-name">
+                <b-form-input type="text" size="sm" name="name" id="input-name" placeholder="" v-model="form.name" ref="name" autocomplete="off"></b-form-input>
+                <span class="text-danger">{{ $errors->first('name') }}</span>
+              </b-form-group>
+              
+              <b-form-group id="fieldset-slug" label-class="font-weight-normal" label="Slug" label-for="input-slug">
+                <b-form-input type="text" size="sm" name="slug" id="input-slug" placeholder="" v-model="form.slug" ref="slug" autocomplete="off"></b-form-input>
+                <span class="text-danger">{{ $errors->first('slug') }}</span>
+              </b-form-group>
+              
+              <b-form-group>
+                <b-button block type="submit" id="btn-submit" variant="primary">Create</b-button>
+              </b-form-group>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        {{ Form::close() }}
+        <!-- /.card -->
+      </div>
+      <div class="col-md-9">
         <div class="card card-primary card-outline">
           <div class="card-body">
             <table id="categoryTable" class="table table-bordered table table-hover dataTable dtr-inline">
@@ -94,7 +146,33 @@
   <!-- /.row -->
 </section>
 <!-- /.content -->
-<script>
+<script type="application/javascript">
+  const vue = new Vue({
+    el: '#app',
+    data: {
+        form: {
+            name: '',
+            slug: '',
+        },
+        api_token: '{{ Auth::user()->api_token }}',
+        dismissSecs: 2,
+        dismissCountDown: 0
+    },
+    methods: {
+        countDownChanged(dismissCountDown) {
+          this.dismissCountDown = dismissCountDown
+        }
+    },
+    watch: {
+        'form.name': function(val) {
+            this.form.slug = Slug(val);
+        },
+        'form.slug': function(val) {
+            this.form.slug = Slug(val);
+        }
+    }
+  });
+
   jQuery(document).ready(function($){
     $.noConflict();
     

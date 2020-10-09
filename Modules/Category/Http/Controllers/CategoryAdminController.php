@@ -11,6 +11,7 @@ use Modules\User\Entities\User;
 use Modules\User\Entities\Role;
 use Modules\Article\Entities\Article;
 use Modules\Category\Entities\Category;
+use Session;
 
 class CategoryAdminController extends Controller
 {
@@ -27,11 +28,12 @@ class CategoryAdminController extends Controller
             return datatables()->of(Category::with('articles')
                 ->get())
                 ->addColumn('count', function($data) {
-                    $count = '<a href="'.route('admin.article.category', $data->id).'" name="articles" id="'.$data->id.'">'.$data->id.'</a>';
+                    $count = '<a href="'.route('admin.article.category', $data->id).'" name="articles" id="'.$data->id.'">'.count($data->articles).'</a>';
                     return $count;
                 })
                 ->addColumn('action', function($data) {
-                    $button = '<a href="'.route('admin.article.show', $data->id).'" type="button" name="view" id="'.$data->id.'" class="btn btn-default btn-flat btn-sm mr-1">'.$data->id.'</a>';
+                    $button = '<a href="'.route('admin.category.edit', $data->id).'" type="button" name="edit" id="'.$data->id.'" class="btn btn-info btn-flat btn-sm mr-1"><i class="fas fa-pen fa-sm"></i></a>';
+                    $button .= '<button type="button" class="btn btn-danger btn-flat btn-sm mr-1 deleteCategory" data-toggle="modal" data-target="#deleteModal" id="'.$data->id.'"><i class="fas fa-trash fa-sm"></i></button>';
                     return $button;
                 })
                 ->rawColumns(['count','action'])
@@ -51,7 +53,12 @@ class CategoryAdminController extends Controller
      */
     public function create()
     {
-        return view('category::create');
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+        
+        return view('category::admin.create')->with(
+            array(
+                'name' => $name
+            ));
     }
 
     /**
@@ -61,7 +68,18 @@ class CategoryAdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255|unique:categories,name',
+            'slug' => 'required|unique:categories,slug',
+        ]);
+        $category = new Category;
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->save();
+
+        Session::flash('success', 'Category successfully created');
+
+        return redirect()->route('admin.category.index');
     }
 
     /**
@@ -81,7 +99,15 @@ class CategoryAdminController extends Controller
      */
     public function edit($id)
     {
-        return view('category::edit');
+        $category = Category::findOrFail($id);
+
+        $name = isset(Auth::user()->name) ? Auth::user()->name : '';
+
+        return view('category::admin.create')->with(
+            array(
+                'name' => $name,
+                'category' => $category,
+            ));
     }
 
     /**
@@ -92,7 +118,19 @@ class CategoryAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255|unique:categories,name,'.$id,
+            'slug' => 'required|unique:categories,slug,'.$id,
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->save();
+
+        Session::flash('success', 'Category successfully updated');
+
+        return redirect()->route('admin.category.index');
     }
 
     /**
@@ -102,6 +140,20 @@ class CategoryAdminController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $name = $category->name;
+        $category->articles()->detach();
+
+        // failed
+        $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+
+        // success
+        if($category->delete()){ 
+            $arr = array('msg' => 'Successfully delete category '.$name, 'status' => true);
+            Session::flash('success', 'Successfully delete category '.$name);
+        }
+
+        // redirect
+        return view('backoffice::inc.messages'); 
     }
 }
