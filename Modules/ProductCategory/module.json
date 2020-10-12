@@ -1,0 +1,14 @@
+{
+    "name": "ProductCategory",
+    "alias": "productcategory",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\ProductCategory\\Providers\\ProductCategoryServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

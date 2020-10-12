@@ -17,6 +17,9 @@ use Input;
 
 class UserAdminController extends Controller
 {
+    public function __construct() {
+        $this->middleware('role:superadministrator|administrator|editor|author|contributor');
+    }
     /**
      * Display a listing of the resource.
      * @return Response
@@ -214,7 +217,7 @@ class UserAdminController extends Controller
         }
 
         // pass sub view alert
-        return view('backoffice::inc.messages'); 
+        return view('backoffice::inc.messages');
 
         // redirect
         // return Response()->json($arr);

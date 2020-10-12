@@ -13,5 +13,8 @@ $fa-font-path: "../webfonts";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
 // Quill WYSIWYG
-@import '~quill/dist/quill.core.css';
-@import '~quill/dist/quill.snow.css';
+// @import '~quill/dist/quill.core.css';
+// @import '~quill/dist/quill.snow.css';
+
+// Vue Multiselect
+@import '~vue-multiselect/dist/vue-multiselect.min.css';

@@ -79,6 +79,52 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.product.') === 0 ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.product.') === 0 ? 'active' : '' }}">
+            <i class="nav-icon fas fa-boxes"></i>
+            <p>
+              Products
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('admin.product.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.product.index' ) ?  'active' : '' }}">
+                <i class="fas fa-caret-right nav-icon fa-xs"></i>
+                <p>All Products</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.product.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.product.create' ) ?  'active' : '' }}">
+                <i class="fas fa-caret-right nav-icon fa-xs"></i>
+                <p>Add New</p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link">
+                <i class="fas fa-caret-right nav-icon fa-xs"></i>
+                <p>
+                  Categories
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview" style="{{ strpos(\Request::route()->getName(), 'admin.category.') === 0 ? 'display: block;' : 'display: none;' }}">
+                <li class="nav-item">
+                  <a href="{{ route('admin.category.index') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.category.index' ) ?  'active' : '' }}">
+                    <i class="fas fa-angle-right"></i>
+                    <p>All Categories</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('admin.category.create') }}" class="nav-link {{ Route::currentRouteNamed( 'admin.category.create' ) ?  'active' : '' }}">
+                    <i class="fas fa-angle-right"></i>
+                    <p>Add New Category</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item has-treeview {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ strpos(\Request::route()->getName(), 'admin.user.') === 0 ? 'active' : '' }}">
             <i class="nav-icon fas fa-users"></i>

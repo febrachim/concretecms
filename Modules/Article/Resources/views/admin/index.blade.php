@@ -9,6 +9,8 @@
 @stop
 
 @section('content')
+{{-- Flash Messages --}}
+<div class="flash-message container-fluid"></div>
 <!-- Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -85,7 +87,7 @@
           <!-- /.card-body -->
           <div class="card-footer p-0">
             <div class="mailbox-controls">
-              <a href="{{ route('admin.article.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
+              <a href="{{ route('admin.category.create') }}" class="btn btn-default btn-block btn-flat"><i class="fas fa-plus"></i> New Category</a>
             </div>
           </div>
         </div>
@@ -213,13 +215,20 @@
           $('#ok_button').attr("disabled", true);
         },
         success: function(data) {
+          $('div.flash-message').html(data);
           setTimeout(function(){
             $('#confirmModal').modal('hide');
             $('#ok_button').removeClass('disabled');
             $('#ok_button').attr("disabled", false);
             $('#ok_button').text('Delete');
             table.ajax.reload();
+            location.reload();
           }, 500);
+          setTimeout(function(){
+            $(".alert").fadeTo(1500, 0).slideUp(500, function() {
+              $(this).remove();
+            });
+          }, 2000);
         }
       })
     });

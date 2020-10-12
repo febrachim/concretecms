@@ -142,12 +142,17 @@ class CategoryAdminController extends Controller
     {
         $category = Category::findOrFail($id);
         $name = $category->name;
-        $category->articles()->detach();
+        $count = Category::all()->count();
 
         // failed
+        if($count <= 1) {
+            Session::flash('error', 'There must be at least 1 category');
+            return view('backoffice::inc.messages'); 
+        }
         $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
 
         // success
+        $category->articles()->detach();
         if($category->delete()){ 
             $arr = array('msg' => 'Successfully delete category '.$name, 'status' => true);
             Session::flash('success', 'Successfully delete category '.$name);

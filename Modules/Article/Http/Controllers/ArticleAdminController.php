@@ -327,11 +327,12 @@ class ArticleAdminController extends Controller
         // success
         if($article->delete()){ 
             $arr = array('msg' => 'Successfully delete article '.$article_title, 'status' => true);
-            Session::flash('message', 'Successfully delete article '.$article_title);
+            Session::flash('success', 'Successfully delete article '.$article_title);
         }
 
         // redirect
-        return Response()->json($arr);
+        return view('backoffice::inc.messages'); 
+        // return Response()->json($arr);
     }
 
     /**

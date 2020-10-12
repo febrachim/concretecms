@@ -12,7 +12,7 @@ class Category extends Model
     	'slug'
     ];
 
-    public function Articles() {
+    public function articles() {
     	return $this->belongsToMany('Modules\Article\Entities\Article')
     		->using('App\ArticleCategory');
     }

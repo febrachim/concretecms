@@ -229,12 +229,14 @@
         beforeSend: function() {
           $('#ok_button').text('Deleting...');
           $('#ok_button').addClass('disabled');
+          $('#ok_button').attr("disabled", true);
         },
         success: function(data) {
           $('div.flash-message').html(data);
           setTimeout(function(){
             $('#confirmModal').modal('hide');
             $('#ok_button').removeClass('disabled');
+            $('#ok_button').attr("disabled", false);
             $('#ok_button').text('Delete');
             table.ajax.reload();
           }, 300);
