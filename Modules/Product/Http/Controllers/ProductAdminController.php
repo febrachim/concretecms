@@ -9,7 +9,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Product\Entities\Product;
 use Modules\ProductCategory\Entities\ProductCategory;
+use Sopamo\LaravelFilepond\Filepond;
 use Session;
+use Storage;
 
 class ProductAdminController extends Controller
 {
@@ -71,6 +73,7 @@ class ProductAdminController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->validate($request, [
             'name' => 'required|max:255|unique:products,name',
             'slug' => 'required|unique:products,slug',
@@ -79,21 +82,34 @@ class ProductAdminController extends Controller
             'composition' => 'required',
             'overview' => 'required',
             'instruction' => 'required',
+            'packshots' => 'required'
         ]);
         $product = new Product;
+        
         $product->name = $request->name;
         $product->slug = $request->slug;
         $product->packaging = $request->packaging;
         $product->composition = $request->composition;
         $product->overview = $request->overview;
         $product->instruction = $request->instruction;
+
+        if($request->hasFile('packshots')) {
+            foreach ($request->file('packshots') as $packshot) {
+                $product->addMedia($packshot)->toMediaCollection('packshot');
+            }
+        }
+        $arr = array('msg' => 'Something went wrong. Please try again!', 'status' => false);
+        
         if($product->save()) {
             $product->productCategories()->sync($request->input('categories'));
+            $arr = array('msg' => 'Product Added Successfully!', 'status' => true);
         }
 
         Session::flash('success', 'Product successfully created');
+        // return as JSON
+        return Response()->json($arr);
 
-        return redirect()->route('admin.product.index');
+        // return redirect()->route('admin.product.index');
     }
 
     /**
@@ -135,5 +151,24 @@ class ProductAdminController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     * @param Request $request
+     * @return Response
+     */
+    public function imageUpload(Request $request) {
+        $filepond = new FilePond;
+        if($request->has('packshots')) 
+        {
+            foreach ($request->packshots as $key => $packshot) {
+                // $product->addMedia($packshot)->toMediaCollection('packshot');
+                // Get the temporary path using the serverId returned by the upload function in `FilepondController.php`
+                $path = $filepond->getPathFromServerId($packshot.serverId);
+            }
+        }
+
+        return $path;
     }
 }

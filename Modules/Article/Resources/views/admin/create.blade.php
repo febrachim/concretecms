@@ -182,13 +182,6 @@
       },
     });
     
-    $('.custom-file-input').on('change',function(){
-      //get the file name
-      var fileName = $(this).target.files[0].name;
-      //replace the "Choose a file" label
-      $(this).next('.custom-file-label').html(fileName);
-    });
-    
     // FORM VALIDATION
     if ($("#article-form").length > 0) {
       var validator = $("#article-form").validate({
@@ -280,13 +273,13 @@
               vue.form.content = null;
               vue.form.fileBanner = null;
               vue.form.fileBannerMobile = null;
-              $('html, body').animate({ scrollTop: 0 }, 0);
+              $('html, body').animate({ scrollTop: 0 }, 500);
               
               document.getElementById("article-form").reset();
               setTimeout(function(){
                 $('#res_message').hide();
                 $('#msg_div').hide();
-              },10000);
+              },1000);
             }
           });
         }

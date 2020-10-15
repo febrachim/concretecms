@@ -18,3 +18,12 @@ $fa-font-path: "../webfonts";
 
 // Vue Multiselect
 @import '~vue-multiselect/dist/vue-multiselect.min.css';
+
+// Vue Slick Carousel
+@import '~slick-carousel/slick/slick.scss';
+@import '~slick-carousel/slick/slick-theme.scss';
+
+// Filepond
+@import '~filepond/dist/filepond.min.css';
+@import '~filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+@import '~filepond-plugin-media-preview/dist/filepond-plugin-media-preview.css';

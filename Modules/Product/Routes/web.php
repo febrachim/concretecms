@@ -24,5 +24,6 @@ Route::prefix('backoffice')->group(function() {
 		Route::get('/{id}/edit/', ['as' => 'edit', 'uses' => 'ProductAdminController@edit']);
 		Route::match(['put', 'patch'], '/{id}/update', ['as' => 'update', 'uses' => 'ProductAdminController@update']);
 		Route::get('/delete/{id}', ['as' => 'delete', 'uses' => 'ProductAdminController@destroy']);
+		Route::post('/upload', ['as' => 'upload', 'uses' => 'ProductAdminController@imageUpload']);
 	});
 });
